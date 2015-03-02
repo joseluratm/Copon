@@ -71,7 +71,7 @@ public final class PantallaPrincipal extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel2.setText("Peska cara huevo");
+        jLabel2.setText("joselu deja de esnifar semen");
 
         jButton1.setText("jButton1");
 
