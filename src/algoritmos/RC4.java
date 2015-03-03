@@ -16,24 +16,7 @@ public class RC4 {
     private static final int SBOX_LENGTH = 256;
     private static final int KEY_MIN_LENGTH = 5;
    
-    /*
-    public static void main(String[] args) {
-       try {
-            Scanner in = new Scanner(System.in);
-            System.out.print("Mensaje a cifrar: ");
-            String text = in.nextLine().toLowerCase();
-            System.out.print("Clave (min 5 dígitos): ");
-            String testKey = in.nextLine().toLowerCase();  
-            RC4 rc4 = new RC4(testKey);
-            char[] result = rc4.encrypt(text.toCharArray());
-            System.out.println("Mensaje cifrado RC4:\n" + new String(result));
-            System.out.println("Mensaje descifrado RC4:\n"
-                    + new String(rc4.decrypt(result)));
-        } catch (InvalidKeyException e) {
-            System.err.println(e.getMessage());
-        }
-    }
-    */
+   
     public RC4(String key) throws InvalidKeyException {
         setKey(key);
     }
