@@ -40,10 +40,10 @@ public final class PantallaPrincipal extends javax.swing.JFrame {
         {
             System.out.println(e.getMessage()+"no encuentra el fichero");
         }
-        Image dimg = img.getScaledInstance(jLabel2.getWidth(), jLabel2.getHeight(),
-        Image.SCALE_SMOOTH);
-        ImageIcon imageIcon = new ImageIcon(dimg);
-        jLabel2.setIcon(imageIcon);
+        //Image dimg = img.getScaledInstance(jLabel2.getWidth(), jLabel2.getHeight(),
+        //Image.SCALE_SMOOTH);
+        //ImageIcon imageIcon = new ImageIcon(dimg);
+        //jLabel2.setIcon(imageIcon);
     }
     
 
