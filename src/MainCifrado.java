@@ -24,10 +24,16 @@ public class MainCifrado {
        if ("1".equals(opcion)) {
            System.out.println("AES 128");
             try {
+                String clave = "";
                 System.out.print("Mensaje a cifrar: ");
                 String msg = in.nextLine().toLowerCase();
-                System.out.print("Clave (16)(0123456789abcdef): ");
-                String clave = in.nextLine().toLowerCase();  
+                //do{
+                    System.out.print("Clave (16)(0123456789abcdef): ");
+                    clave = in.nextLine().toLowerCase();  
+                    System.out.print("\n");
+                //}while(clave.length() != 16);
+                
+                
                 //clave = "0123456789abcdef";
                 byte[] cipher = encrypt(msg, clave);
                 System.out.print("cipher:  ");
