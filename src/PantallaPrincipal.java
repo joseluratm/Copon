@@ -177,9 +177,10 @@ public final class PantallaPrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void boton_descifrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boton_descifrarActionPerformed
-       if(!txt_imagen.getText().isEmpty())
+        //TODO cambiar por pantallaDescifrar
+        if(!txt_imagen.getText().isEmpty())
        {
-            VisorImagen pi = new VisorImagen("cifrar", txt_imagen.getText());
+            PantallaCifrado pi = new PantallaCifrado("cifrar", txt_imagen.getText());
             pi.show();
        }
        else
@@ -191,7 +192,7 @@ public final class PantallaPrincipal extends javax.swing.JFrame {
     private void boton_cifrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boton_cifrarActionPerformed
         if(!txt_imagen.getText().isEmpty())
         {
-            VisorImagen pi = new VisorImagen("cifrar", txt_imagen.getText());
+            PantallaCifrado pi = new PantallaCifrado("cifrar", txt_imagen.getText());
             pi.show();
         }
         else
