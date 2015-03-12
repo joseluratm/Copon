@@ -1,13 +1,8 @@
 
 
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
+
 import java.io.File;
-import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 
@@ -30,10 +25,8 @@ public final class PantallaPrincipal extends javax.swing.JFrame {
      */
     public PantallaPrincipal() {
         initComponents();
+        setLocationRelativeTo(null);
     }
-
-   
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -190,36 +183,65 @@ public final class PantallaPrincipal extends javax.swing.JFrame {
 
     private void boton_descifrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boton_descifrarActionPerformed
         //TODO cambiar por pantallaDescifrar
-        if(!txt_imagen.getText().isEmpty())
+       
+       if(boton_descifrar.getText().contains("fichero"))
+       {
+            JOptionPane.showMessageDialog(null, "Se llamara a pantalla fichero");            
+       }
+        else if(!txt_imagen.getText().isEmpty())
        {
             PantallaCifrado pi = new PantallaCifrado("cifrar", txt_imagen.getText());
+            pi.setLocationRelativeTo(null);
             pi.show();
        }
        else
        {
-            JOptionPane.showMessageDialog(null, "No hay una ruta de imagen Valida");
+            JOptionPane.showMessageDialog(null, "No hay una ruta Valida");
        }
     }//GEN-LAST:event_boton_descifrarActionPerformed
 
     private void boton_cifrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boton_cifrarActionPerformed
-        if(!txt_imagen.getText().isEmpty())
+        
+        if(boton_cifrar.getText().contains("fichero"))
+        {
+            JOptionPane.showMessageDialog(null, "Se llamara a pantalla fichero");            
+        }   
+        else if(!txt_imagen.getText().isEmpty())
         {
             PantallaCifrado pi = new PantallaCifrado("cifrar", txt_imagen.getText());
+            pi.setLocationRelativeTo(null);
             pi.show();
         }
         else
         {
-            JOptionPane.showMessageDialog(null, "No hay una ruta de imagen Valida");
+            JOptionPane.showMessageDialog(null, "No hay una ruta Valida");
         }
     }//GEN-LAST:event_boton_cifrarActionPerformed
 
     private void boton_imagenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boton_imagenActionPerformed
         JFileChooser fileChooser = new JFileChooser();
+        boolean EsImagen = false;
         int returnValue = fileChooser.showOpenDialog(null);
         if(returnValue == JFileChooser.APPROVE_OPTION)
         {
             File selected = fileChooser.getSelectedFile();
             txt_imagen.setText(selected.getPath());
+        }
+        String[] tipoImagen = new String[] {"jpg", "bmp", "png","jpeg", "gif", "tiff"};
+        for(String s : tipoImagen)
+        {
+            if(txt_imagen.getText().contains(s))
+            {  
+                EsImagen = true;
+                boton_cifrar.setText("Cifrar");
+                boton_descifrar.setText("Descifrar");
+                break;
+            }
+        }
+        if(EsImagen== false)
+        {
+            boton_cifrar.setText("Cifrar fichero");
+            boton_descifrar.setText("Descifrar fichero");
         }
     }//GEN-LAST:event_boton_imagenActionPerformed
 
@@ -258,7 +280,6 @@ public final class PantallaPrincipal extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new PantallaPrincipal().setVisible(true);
-               
             }
         });
     }
