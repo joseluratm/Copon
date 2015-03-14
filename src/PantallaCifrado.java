@@ -4,6 +4,13 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.awt.image.WritableRaster;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 
@@ -24,11 +31,14 @@ public final class PantallaCifrado extends javax.swing.JFrame {
     /**
      * Creates new form PantallaPrincipal
      */
+    private String rutica;
+    
     public PantallaCifrado() {
         initComponents();
     }
     public PantallaCifrado(String accion, String RutaImagen) {
         initComponents();
+        this.rutica = RutaImagen;
         VerImagen(RutaImagen);
         if(accion == "cifrar")
         {
@@ -223,6 +233,11 @@ public final class PantallaCifrado extends javax.swing.JFrame {
 
         jButton1.setFont(new java.awt.Font("DejaVu Sans", 0, 11)); // NOI18N
         jButton1.setText("Ocultar Mensaje");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jPanel4.setBackground(new java.awt.Color(51, 51, 51));
 
@@ -382,6 +397,96 @@ public final class PantallaCifrado extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    public String convertirABinario(String message)
+    {
+        String bin = "";
+        for (int i = 0; i < message.length(); i++)
+        {
+            bin += convertirLetraABinario(message.charAt(i));
+        }
+        return bin;
+    }
+    public String convertirLetraABinario(char caracter)
+    {
+        int x = (int)caracter;
+        String binario = "";
+        for (int i = 0; i < 8; i++)
+        {
+            binario = "" + (x % 2) + binario;
+            x = x/ 2;
+        }
+        return binario;
+    }
+    
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        
+        File imgPath = new File(rutica);
+        
+        String mensaje = jTextArea1.getText();
+        mensaje = convertirABinario(mensaje);
+        BufferedImage bufferedImage = null;
+   
+        try {
+            bufferedImage = ImageIO.read(imgPath);
+        } catch (IOException ex) {
+            Logger.getLogger(PantallaCifrado.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        int height = bufferedImage.getHeight();
+        int width = bufferedImage.getWidth();
+        
+        WritableRaster raster = bufferedImage.getRaster();
+        DataBufferByte data   = (DataBufferByte) raster.getDataBuffer();
+       
+        //hay que ver como metemos el mensaje y como lo repartimso por la foto.
+        for(int i = 0; i<data.getData().length; i++)
+        {
+            data.getData()[i] = lsb(data.getData()[i], '1');
+        }
+        //coge los nuevos datos y genera la nueva imagen.
+        BufferedImage newImage = new BufferedImage(width, height, bufferedImage.TYPE_3BYTE_BGR);
+        WritableRaster rasterFinal = newImage.getRaster();
+        rasterFinal.setDataElements(0, 0, width, height, data.getData());
+        newImage.setData(raster);
+        try {
+            ImageIO.write(newImage, "jpg", new File("/Users/joseluisllinaresanton/Desktop/newimage.jpg"));
+        } catch (IOException ex) {
+            Logger.getLogger(PantallaCifrado.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        System.out.println("acabo");
+               
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    public byte lsb(byte s, char seCambia)
+    {
+        String binario = byteABinario(s);
+        
+        if(binario.charAt(binario.length()-1)=='0' && seCambia=='1')
+        {
+            binario = binario.substring(0, binario.length()-1);
+            binario += "1";
+        }
+        else if(binario.charAt(binario.length()-1)=='1' && seCambia=='1')
+        {
+            binario = binario.substring(0, binario.length()-1);
+            binario += "0";
+        }
+        int decimalValue = Integer.parseInt(binario, 2);
+        
+        byte b  = (byte)decimalValue;       
+        return b;
+    }
+    public String byteABinario(byte s)
+    {
+            int i2 = s & 0xFF;
+            String binario = "";
+            for (int i = 0; i < 8; i++)
+            {
+                binario = "" + (i2 % 2) + binario;
+                i2 = i2/ 2;
+            }
+            return binario;
+    }
+    
     /**
      * @param args the command line arguments
      */
