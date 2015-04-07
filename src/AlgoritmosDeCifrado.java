@@ -61,4 +61,13 @@ public class AlgoritmosDeCifrado {
           }
             return "holi :D";
     }
+    
+    public String desencriptarRC4(String encriptado, String clave) throws Exception
+    {
+            RC4 rc4 = new RC4(clave);
+            char[] m = encriptado.toCharArray();
+            char[] decrypted = rc4.decrypt(m);
+            String b = new String(decrypted);
+            return b;
+    }
 }

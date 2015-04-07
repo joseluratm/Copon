@@ -190,7 +190,7 @@ public final class PantallaPrincipal extends javax.swing.JFrame {
        }
         else if(!txt_imagen.getText().isEmpty())
        {
-            PantallaCifrado pi = new PantallaCifrado("cifrar", txt_imagen.getText());
+            PantallaDesencriptacion pi = new PantallaDesencriptacion(txt_imagen.getText());
             pi.setLocationRelativeTo(null);
             pi.show();
        }

@@ -1,5 +1,6 @@
 
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
@@ -8,11 +9,13 @@ import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
 
 
@@ -33,6 +36,7 @@ public final class PantallaCifrado extends javax.swing.JFrame {
      * Creates new form PantallaPrincipal
      */
     private String rutica;
+    private int pixeles;
     
     public PantallaCifrado() {
         initComponents();
@@ -120,8 +124,10 @@ public final class PantallaCifrado extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
         lbl_mensaje1 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1140, 575));
         setResizable(false);
 
@@ -302,9 +308,18 @@ public final class PantallaCifrado extends javax.swing.JFrame {
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addGap(28, 28, 28)
                                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel8)
-                                            .addComponent(jLabel7)
-                                            .addComponent(jLabel9)))
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addComponent(jLabel8)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jLabel10))
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addComponent(jLabel7)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(jLabel4))
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addComponent(jLabel9)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(jLabel11))))
                                     .addComponent(lbl_mensaje1)
                                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 510, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel6))))))
@@ -345,11 +360,17 @@ public final class PantallaCifrado extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel7)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel7)
+                                    .addComponent(jLabel4))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel8)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel8)
+                                    .addComponent(jLabel10))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel9)))))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel9)
+                                    .addComponent(jLabel11))))))
                 .addContainerGap(41, Short.MAX_VALUE))
         );
 
@@ -357,7 +378,7 @@ public final class PantallaCifrado extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1140, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -371,58 +392,101 @@ public final class PantallaCifrado extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-        File imgPath = new File(rutica);
-
-        String mensajeInicial = jTextArea1.getText();
-        String mensaje="";
-        String clave = jPasswordField1.getText();
-        int valorClave = valorDeClave(clave);
-        
-        AlgoritmosDeCifrado algoritmo = new AlgoritmosDeCifrado();
-        if(jRadioButton1.isSelected()) //significa que se ha elegido AES
+        if(jPasswordField1.getText().length()>=5)
         {
+            File imgPath = new File(rutica);
+
+            String mensajeInicial = jTextArea1.getText();
+            String mensaje="";
+            String clave = jPasswordField1.getText();
+            int valorClave = valorDeClave(clave);
+            long totalTime=0;
+            long totalTimeOcultacion=0;
             
+            AlgoritmosDeCifrado algoritmo = new AlgoritmosDeCifrado();
+            if(jRadioButton1.isSelected()) //significa que se ha elegido AES
+            {
+
+            }
+            else //significa que se ha elegido RC4. Aplica la encriptación al mensaje con la clave proporcionada.
+            {
+                long startTime = System.currentTimeMillis();
+                mensaje = algoritmo.algoritmoRC4(mensajeInicial, clave); 
+                long endTime   = System.currentTimeMillis();
+                totalTime = endTime - startTime;
+            }
+            long startTime = System.currentTimeMillis();
+            String mensajeEncriptado = mensaje;
+            mensaje = convertirABinario(mensaje); //Se pasa a binario
+            BufferedImage bufferedImage = null;
+
+            try {
+                bufferedImage = ImageIO.read(imgPath);
+            } catch (IOException ex) {
+                Logger.getLogger(PantallaCifrado.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            int height = bufferedImage.getHeight();
+            int width = bufferedImage.getWidth();
+
+            WritableRaster raster = bufferedImage.getRaster();
+            DataBufferByte data   = (DataBufferByte) raster.getDataBuffer();
+
+            Random rnd = new Random();
+            rnd.setSeed(data.getData().length+valorClave);  //la semilla será el valor de la clave + los datos.
+
+
+            int i =0;
+            while(i<mensaje.length())
+            {
+                int posicion = rnd.nextInt(((data.getData().length-1) - 1) + 1)+ 1;
+                data.getData()[posicion] = lsb(data.getData()[posicion], mensaje.charAt(i));  
+                i++;
+            }
+
+
+
+            //coge los nuevos datos y genera la nueva imagen.
+            //TYPE_3BYTE_BGR
+            BufferedImage newImage = new BufferedImage(width, height, bufferedImage.getType());
+            WritableRaster rasterFinal = newImage.getRaster();
+            rasterFinal.setDataElements(0, 0, width, height, data.getData());
+            newImage.setData(raster);
+            Color mycolor = new Color(mensajeInicial.length(),0, 0);
+            try {
+                //la posicion donde esta el tamaño tambien va escondida
+                //segun la clave y el tamaño de la imagen.
+                Random posiH = new Random();
+                posiH.setSeed(valorClave);
+                int posicionTamTextH = posiH.nextInt((newImage.getHeight() - 1) + 1)+ 1;
+                System.out.println(posicionTamTextH);
+                Random posiW = new Random();
+                posiW.setSeed(valorClave);
+                int posicionTamTextW = posiW.nextInt((newImage.getWidth() - 1) + 1)+ 1;
+                System.out.println(posicionTamTextW);
+                newImage.setRGB(posicionTamTextH, posicionTamTextW, mycolor.getRGB()); 
+                ImageIO.write(newImage, "png", new File("/Users/joseluisllinaresanton/Desktop/"+mensajeInicial+".png"));
+                
+                
+                
+                BufferedImage imagenEscalada = EscalarImagen(label_imagen.getWidth(), label_imagen.getHeight(), "/Users/joseluisllinaresanton/Desktop/"+mensajeInicial+".png");
+                label_imagen1.setIcon(new ImageIcon((Image)imagenEscalada));
+                long EndTime = System.currentTimeMillis();
+                totalTimeOcultacion = EndTime - startTime;
+                jTextArea2.setText(mensajeEncriptado);
+                jLabel4.setText(totalTime+ " milisegundos para cifrar el mensaje.");
+                jLabel10.setText(totalTimeOcultacion +" milisegundos para ocultar el mensaje.");
+                jLabel11.setText(pixeles + " modificados en total.");
+            } catch (IOException ex)
+            {
+                Logger.getLogger(PantallaCifrado.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        else //significa que se ha elegido RC4. Aplica la encriptación al mensaje con la clave proporcionada.
+        else
         {
-            mensaje = algoritmo.algoritmoRC4(mensajeInicial, clave); 
-        }
-        System.out.println(mensaje); //y devuelve el mensaje encriptado.
-        mensaje = convertirABinario(mensaje); //Se pasa a binario
-        BufferedImage bufferedImage = null;
-
-        try {
-            bufferedImage = ImageIO.read(imgPath);
-        } catch (IOException ex) {
-            Logger.getLogger(PantallaCifrado.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        int height = bufferedImage.getHeight();
-        int width = bufferedImage.getWidth();
-
-        WritableRaster raster = bufferedImage.getRaster();
-        DataBufferByte data   = (DataBufferByte) raster.getDataBuffer();
-
-        Random rnd = new Random();
-        rnd.setSeed(data.getData().length+valorClave);  //la semilla será el valor de la clave + los datos.
-        
-        int i =0;
-        while(i<mensaje.length())
-        {
-            int posicion = rnd.nextInt(data.getData().length-1);
-            data.getData()[posicion] = lsb(data.getData()[posicion], mensaje.charAt(i));  
-            i++;
+            JOptionPane.showMessageDialog(null, "Tamaño de clave demasiado pequeña. Pruebe con otra.");  
         }
         
-        //coge los nuevos datos y genera la nueva imagen.
-        BufferedImage newImage = new BufferedImage(width, height, bufferedImage.TYPE_3BYTE_BGR);
-        WritableRaster rasterFinal = newImage.getRaster();
-        rasterFinal.setDataElements(0, 0, width, height, data.getData());
-        newImage.setData(raster);
-        try {
-            ImageIO.write(newImage, "jpg", new File("/Users/joseluisllinaresanton/Desktop/newimage.jpg"));
-        } catch (IOException ex) {
-            Logger.getLogger(PantallaCifrado.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton2ActionPerformed
@@ -468,11 +532,13 @@ public final class PantallaCifrado extends javax.swing.JFrame {
         {
             binario = binario.substring(0, binario.length()-1);
             binario += "1";
+            pixeles += 1;
         }
         else if(binario.charAt(binario.length()-1)=='1' && seCambia=='0')
         {
             binario = binario.substring(0, binario.length()-1);
             binario += "0";
+            pixeles += 1;
         }
         int decimalValue = Integer.parseInt(binario, 2);
         
@@ -531,8 +597,11 @@ public final class PantallaCifrado extends javax.swing.JFrame {
     private javax.swing.JLabel img_candado;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
