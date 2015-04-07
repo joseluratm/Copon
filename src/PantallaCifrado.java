@@ -8,6 +8,7 @@ import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -35,6 +36,7 @@ public final class PantallaCifrado extends javax.swing.JFrame {
     
     public PantallaCifrado() {
         initComponents();
+       
     }
     public PantallaCifrado(String accion, String RutaImagen) {
         initComponents();
@@ -76,6 +78,16 @@ public final class PantallaCifrado extends javax.swing.JFrame {
     }
     
 
+    public int valorDeClave(String clave)
+    {
+        int valor = 0;
+        for(int i = 0; i<clave.length(); i++)
+        {
+            valor += clave.charAt(i);
+        }
+        return valor;
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -86,10 +98,9 @@ public final class PantallaCifrado extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
-        boton_DES = new javax.swing.JButton();
-        boton_AES = new javax.swing.JButton();
-        boton_RC4 = new javax.swing.JButton();
         img_candado = new javax.swing.JLabel();
+        jRadioButton1 = new javax.swing.JRadioButton();
+        jRadioButton2 = new javax.swing.JRadioButton();
         label_imagen = new javax.swing.JLabel();
         lbl_mensaje = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -97,70 +108,71 @@ public final class PantallaCifrado extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jPasswordField1 = new javax.swing.JPasswordField();
-        jPasswordField2 = new javax.swing.JPasswordField();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         label_imagen1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jProgressBar1 = new javax.swing.JProgressBar();
-        jPanel4 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
-        lbl_mensaje1 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextArea2 = new javax.swing.JTextArea();
+        lbl_mensaje1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1140, 670));
+        setPreferredSize(new java.awt.Dimension(1140, 575));
         setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(51, 51, 51));
+        jPanel1.setPreferredSize(new java.awt.Dimension(1099, 575));
 
         jPanel2.setBackground(new java.awt.Color(102, 102, 102));
 
-        boton_DES.setFont(new java.awt.Font("DejaVu Sans", 0, 11)); // NOI18N
-        boton_DES.setText("DES");
-
-        boton_AES.setFont(new java.awt.Font("DejaVu Sans", 0, 11)); // NOI18N
-        boton_AES.setText("AES");
-
-        boton_RC4.setFont(new java.awt.Font("DejaVu Sans", 0, 11)); // NOI18N
-        boton_RC4.setText("RC4");
-
         img_candado.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/lock77.png"))); // NOI18N
+
+        jRadioButton1.setText("AES");
+        jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton1ActionPerformed(evt);
+            }
+        });
+
+        jRadioButton2.setSelected(true);
+        jRadioButton2.setText("RC4");
+        jRadioButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(20, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(img_candado)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(boton_AES)
-                    .addComponent(boton_DES)
-                    .addComponent(boton_RC4))
-                .addGap(28, 28, 28))
+                    .addComponent(jRadioButton2)
+                    .addComponent(jRadioButton1))
+                .addGap(190, 190, 190))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(boton_RC4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(boton_DES)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(boton_AES)
-                .addGap(31, 31, 31))
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addComponent(img_candado)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap(13, Short.MAX_VALUE)
+                        .addComponent(jRadioButton1)
+                        .addGap(24, 24, 24)
+                        .addComponent(jRadioButton2))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(img_candado)))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         label_imagen.setBackground(new java.awt.Color(204, 204, 204));
@@ -181,18 +193,18 @@ public final class PantallaCifrado extends javax.swing.JFrame {
         jPanel3.setBackground(new java.awt.Color(51, 51, 51));
 
         jPasswordField1.setBackground(new java.awt.Color(204, 204, 204));
-        jPasswordField1.setText("jPasswordField1");
-
-        jPasswordField2.setBackground(new java.awt.Color(204, 204, 204));
-        jPasswordField2.setText("jPasswordField2");
 
         jLabel3.setFont(new java.awt.Font("DejaVu Sans", 0, 11)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(204, 204, 204));
         jLabel3.setText("Clave");
 
-        jLabel4.setFont(new java.awt.Font("DejaVu Sans", 0, 11)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(204, 204, 204));
-        jLabel4.setText("Repita la clave");
+        jButton1.setFont(new java.awt.Font("DejaVu Sans", 0, 11)); // NOI18N
+        jButton1.setText("Ocultar Mensaje");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -200,12 +212,14 @@ public final class PantallaCifrado extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(31, 31, 31)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel4)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3)
-                    .addComponent(jPasswordField1, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
-                    .addComponent(jPasswordField2))
+                    .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(19, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addGap(74, 74, 74))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -214,11 +228,9 @@ public final class PantallaCifrado extends javax.swing.JFrame {
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(4, 4, 4)
-                .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPasswordField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jButton1)
+                .addContainerGap(23, Short.MAX_VALUE))
         );
 
         jLabel5.setFont(new java.awt.Font("DejaVu Sans", 0, 14)); // NOI18N
@@ -230,46 +242,6 @@ public final class PantallaCifrado extends javax.swing.JFrame {
         jLabel6.setText("Imagen codificada");
 
         label_imagen1.setBackground(new java.awt.Color(204, 204, 204));
-
-        jButton1.setFont(new java.awt.Font("DejaVu Sans", 0, 11)); // NOI18N
-        jButton1.setText("Ocultar Mensaje");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        jPanel4.setBackground(new java.awt.Color(51, 51, 51));
-
-        jTextArea2.setBackground(new java.awt.Color(204, 204, 204));
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(5);
-        jScrollPane2.setViewportView(jTextArea2);
-
-        lbl_mensaje1.setFont(new java.awt.Font("DejaVu Sans", 0, 12)); // NOI18N
-        lbl_mensaje1.setForeground(new java.awt.Color(204, 204, 204));
-        lbl_mensaje1.setText("Mensaje cifrado");
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 510, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbl_mensaje1))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lbl_mensaje1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(37, 37, 37))
-        );
 
         jLabel1.setFont(new java.awt.Font("DejaVu Sans", 0, 12)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(204, 204, 204));
@@ -287,12 +259,21 @@ public final class PantallaCifrado extends javax.swing.JFrame {
         jLabel9.setForeground(new java.awt.Color(204, 204, 204));
         jLabel9.setText("Pixeles modificados:");
 
+        jTextArea2.setBackground(new java.awt.Color(204, 204, 204));
+        jTextArea2.setColumns(20);
+        jTextArea2.setRows(5);
+        jScrollPane2.setViewportView(jTextArea2);
+
+        lbl_mensaje1.setFont(new java.awt.Font("DejaVu Sans", 0, 12)); // NOI18N
+        lbl_mensaje1.setForeground(new java.awt.Color(204, 204, 204));
+        lbl_mensaje1.setText("Mensaje cifrado");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(31, 31, 31)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -302,83 +283,74 @@ public final class PantallaCifrado extends javax.swing.JFrame {
                         .addGap(52, 52, 52)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5)
-                            .addComponent(label_imagen, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 258, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(24, 24, 24))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel6)
-                            .addComponent(label_imagen1, javax.swing.GroupLayout.PREFERRED_SIZE, 457, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(63, 63, 63))))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(label_imagen, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
+                                .addComponent(label_imagen1, javax.swing.GroupLayout.PREFERRED_SIZE, 457, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(38, 38, 38))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(40, 40, 40))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jButton1)
-                        .addGap(63, 63, 63)))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel2)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(89, 89, 89)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel8)
-                            .addComponent(jLabel7)
-                            .addComponent(jLabel9))))
+                        .addGap(40, 40, 40)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel2)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 210, Short.MAX_VALUE)
+                                .addGap(42, 42, 42)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel1)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(28, 28, 28)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel8)
+                                            .addComponent(jLabel7)
+                                            .addComponent(jLabel9)))
+                                    .addComponent(lbl_mensaje1)
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 510, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel6))))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel6))
-                .addGap(13, 13, 13)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(label_imagen1, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(label_imagen, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(16, 16, 16)
+                        .addGap(28, 28, 28)
+                        .addComponent(jLabel5))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(39, 39, 39)
+                        .addComponent(jLabel6)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(label_imagen1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(label_imagen, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(lbl_mensaje)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addComponent(jLabel1)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jLabel7)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jLabel8)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jLabel9)))
-                                        .addGap(24, 24, 24)
-                                        .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(jButton1)))))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(lbl_mensaje1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(61, Short.MAX_VALUE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel8)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel9)))))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -391,11 +363,81 @@ public final class PantallaCifrado extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 22, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+
+        File imgPath = new File(rutica);
+
+        String mensajeInicial = jTextArea1.getText();
+        String mensaje="";
+        String clave = jPasswordField1.getText();
+        int valorClave = valorDeClave(clave);
+        
+        AlgoritmosDeCifrado algoritmo = new AlgoritmosDeCifrado();
+        if(jRadioButton1.isSelected()) //significa que se ha elegido AES
+        {
+            
+        }
+        else //significa que se ha elegido RC4. Aplica la encriptación al mensaje con la clave proporcionada.
+        {
+            mensaje = algoritmo.algoritmoRC4(mensajeInicial, clave); 
+        }
+        System.out.println(mensaje); //y devuelve el mensaje encriptado.
+        mensaje = convertirABinario(mensaje); //Se pasa a binario
+        BufferedImage bufferedImage = null;
+
+        try {
+            bufferedImage = ImageIO.read(imgPath);
+        } catch (IOException ex) {
+            Logger.getLogger(PantallaCifrado.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        int height = bufferedImage.getHeight();
+        int width = bufferedImage.getWidth();
+
+        WritableRaster raster = bufferedImage.getRaster();
+        DataBufferByte data   = (DataBufferByte) raster.getDataBuffer();
+
+        Random rnd = new Random();
+        rnd.setSeed(data.getData().length+valorClave);  //la semilla será el valor de la clave + los datos.
+        
+        int i =0;
+        while(i<mensaje.length())
+        {
+            int posicion = rnd.nextInt(data.getData().length-1);
+            data.getData()[posicion] = lsb(data.getData()[posicion], mensaje.charAt(i));  
+            i++;
+        }
+        
+        //coge los nuevos datos y genera la nueva imagen.
+        BufferedImage newImage = new BufferedImage(width, height, bufferedImage.TYPE_3BYTE_BGR);
+        WritableRaster rasterFinal = newImage.getRaster();
+        rasterFinal.setDataElements(0, 0, width, height, data.getData());
+        newImage.setData(raster);
+        try {
+            ImageIO.write(newImage, "jpg", new File("/Users/joseluisllinaresanton/Desktop/newimage.jpg"));
+        } catch (IOException ex) {
+            Logger.getLogger(PantallaCifrado.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton2ActionPerformed
+        if(jRadioButton2.isSelected())
+        {
+            jRadioButton1.setSelected(false); 
+        }
+    }//GEN-LAST:event_jRadioButton2ActionPerformed
+
+    private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
+        if(jRadioButton1.isSelected())
+        {
+            jRadioButton2.setSelected(false);
+        }
+    }//GEN-LAST:event_jRadioButton1ActionPerformed
 
     public String convertirABinario(String message)
     {
@@ -418,44 +460,6 @@ public final class PantallaCifrado extends javax.swing.JFrame {
         return binario;
     }
     
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
-        File imgPath = new File(rutica);
-        
-        String mensaje = jTextArea1.getText();
-        mensaje = convertirABinario(mensaje);
-        BufferedImage bufferedImage = null;
-   
-        try {
-            bufferedImage = ImageIO.read(imgPath);
-        } catch (IOException ex) {
-            Logger.getLogger(PantallaCifrado.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        int height = bufferedImage.getHeight();
-        int width = bufferedImage.getWidth();
-        
-        WritableRaster raster = bufferedImage.getRaster();
-        DataBufferByte data   = (DataBufferByte) raster.getDataBuffer();
-       
-        //hay que ver como metemos el mensaje y como lo repartimso por la foto.
-        for(int i = 0; i<data.getData().length; i++)
-        {
-            data.getData()[i] = lsb(data.getData()[i], '1');
-        }
-        //coge los nuevos datos y genera la nueva imagen.
-        BufferedImage newImage = new BufferedImage(width, height, bufferedImage.TYPE_3BYTE_BGR);
-        WritableRaster rasterFinal = newImage.getRaster();
-        rasterFinal.setDataElements(0, 0, width, height, data.getData());
-        newImage.setData(raster);
-        try {
-            ImageIO.write(newImage, "jpg", new File("/Users/joseluisllinaresanton/Desktop/newimage.jpg"));
-        } catch (IOException ex) {
-            Logger.getLogger(PantallaCifrado.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        System.out.println("acabo");
-               
-    }//GEN-LAST:event_jButton1ActionPerformed
-
     public byte lsb(byte s, char seCambia)
     {
         String binario = byteABinario(s);
@@ -465,7 +469,7 @@ public final class PantallaCifrado extends javax.swing.JFrame {
             binario = binario.substring(0, binario.length()-1);
             binario += "1";
         }
-        else if(binario.charAt(binario.length()-1)=='1' && seCambia=='1')
+        else if(binario.charAt(binario.length()-1)=='1' && seCambia=='0')
         {
             binario = binario.substring(0, binario.length()-1);
             binario += "0";
@@ -519,19 +523,16 @@ public final class PantallaCifrado extends javax.swing.JFrame {
             public void run() {
                 new PantallaPrincipal().setVisible(true);
                
+               
             }
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton boton_AES;
-    private javax.swing.JButton boton_DES;
-    private javax.swing.JButton boton_RC4;
     private javax.swing.JLabel img_candado;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
@@ -540,10 +541,9 @@ public final class PantallaCifrado extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JPasswordField jPasswordField2;
-    private javax.swing.JProgressBar jProgressBar1;
+    private javax.swing.JRadioButton jRadioButton1;
+    private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextArea1;
