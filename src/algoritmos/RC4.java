@@ -38,7 +38,8 @@ public class RC4 {
             j = (j + sbox[i]) % SBOX_LENGTH;
             swap(i, j, sbox);
             int rand = sbox[(sbox[i] + sbox[j]) % SBOX_LENGTH];
-            code[n] = (char) (rand ^ (int) msg[n]);
+            char c = (char) (rand ^ (int) msg[n]);
+            code[n] = c;
         }
         return code;
     }

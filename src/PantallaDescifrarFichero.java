@@ -1,3 +1,4 @@
+import algoritmos.RC4;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -13,8 +14,10 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-import java.awt.datatransfer.*;
-import java.awt.Toolkit;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.nio.CharBuffer;
+import java.util.ArrayList;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -26,17 +29,20 @@ import java.awt.Toolkit;
  *
  * @author joseluisllinaresanton
  */
-public class PantallaDesencriptacion extends javax.swing.JFrame {
+public class PantallaDescifrarFichero extends javax.swing.JFrame {
 
     /**
      * Creates new form PantallaDesencriptacion
      */
     private String rutica;
+    private String extension;
+    private CharBuffer asciis;
+    private RC4 RC4;
     
-    public PantallaDesencriptacion() {
+    public PantallaDescifrarFichero() {
         initComponents();
     }
-    public PantallaDesencriptacion(String rutaImagen) {
+    public PantallaDescifrarFichero(String rutaImagen) {
         setResizable(false);
         this.rutica=rutaImagen;
         setTitle("Descifrar");
@@ -283,6 +289,7 @@ public class PantallaDesencriptacion extends javax.swing.JFrame {
         return valor;
     }
     
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
        
         File imgPath = new File(rutica);
@@ -314,30 +321,92 @@ public class PantallaDesencriptacion extends javax.swing.JFrame {
         Random posiH = new Random();
         posiH.setSeed(valorClave);
         int posicionTamTextH = posiH.nextInt((bufferedImage.getHeight() - 1) + 1)+ 1;
+        posicionTamTextH = posicionTamTextH/2;
         
         Random posiW = new Random();
         posiW.setSeed(valorClave);
         int posicionTamTextW = posiW.nextInt((bufferedImage.getWidth() - 1) + 1)+ 1;
+        posicionTamTextW = posicionTamTextW/2;
         
-        Color mycolor = new Color(bufferedImage.getRGB(posicionTamTextH/2, posicionTamTextW/2));
-        int tamMensaje = mycolor.getRed();
+        Color mycolor = new Color(bufferedImage.getRGB(posicionTamTextH, posicionTamTextW));
+        String ex1 = Integer.toBinaryString(mycolor.getBlue());
+        String ex2 = Integer.toBinaryString(mycolor.getGreen());
+        String ex3 = Integer.toBinaryString(mycolor.getRed());
+        int charCode1 = Integer.parseInt(ex1, 2);
+        int charCode2 = Integer.parseInt(ex2, 2);
+        int charCode3 = Integer.parseInt(ex3, 2);
+        String str1 = new Character((char)charCode1).toString();
+        String str2 = new Character((char)charCode2).toString();
+        String str3 = new Character((char)charCode3).toString();
+
+        extension = "."+str3+str2+str1; //Sacamos la extensión.
+                
+        Color tamArchivo = new Color(bufferedImage.getRGB(posicionTamTextH+1, posicionTamTextW+1));
+        int tamFichero = tamArchivo.getRed();
+        ArrayList<Color> tamColores = new ArrayList<Color>();
+        for(int totalPixeles = 0; totalPixeles<tamFichero; totalPixeles++)
+        {
+             Color ColorPixeles = new Color(bufferedImage.getRGB(posicionTamTextH+2+totalPixeles, posicionTamTextW+2+totalPixeles));
+             tamColores.add(ColorPixeles);
+        }
+        int resultado =0;
+        System.out.println(tamColores.get(0)+"colorsito");
+        for(int sacarTamaño = 0; sacarTamaño< tamColores.size(); sacarTamaño++)
+        {
+             String valor ="";
+             valor += Integer.toBinaryString(tamColores.get(sacarTamaño).getRed());
+             if(!"0".equals(Integer.toBinaryString(tamColores.get(sacarTamaño).getGreen())))
+             {
+                 valor += Integer.toBinaryString(tamColores.get(sacarTamaño).getGreen());
+             }
+             if(!"0".equals(Integer.toBinaryString(tamColores.get(sacarTamaño).getBlue())))
+             {
+                 valor += Integer.toBinaryString(tamColores.get(sacarTamaño).getBlue());                 
+             }             
+             resultado = Integer.parseInt(valor, 2);
+        }
+        System.out.println(resultado+"tamaño en bytes encriptado."); //ya tenemos el puto tamaño del fichero encriptado.
         
-        String mensajeFinal="";
-        while(i<tamMensaje*8)
+
+        int p =0;
+        while(p<resultado*8)
         {
             int posicion = rnd.nextInt(((data.getData().length-1) - 1) + 1)+ 1;
             mensajeBinario += getLSB(data.getData()[posicion]);
-            if(mensajeBinario.length()==8)
-            {
-                mensajeFinal +=convertirBinarioALetra(mensajeBinario);
-                mensajeBinario="";
-            }
-            i++;
+            p++;
         }
-        System.out.println(mensajeFinal);
-        String desencriptado = "";
-        //Y despues desencriptarla
-        AlgoritmosDeCifrado algoritmo = new AlgoritmosDeCifrado();
+        int as =0;
+        int pos =0;
+        char[] caracteres = new char[mensajeBinario.length()/8];
+        
+        
+        while(as<mensajeBinario.length())
+        {
+            String aux = mensajeBinario.substring(as, as+8);
+                int charCode = Integer.parseInt(aux, 2);
+                caracteres[pos] = asciis.get(charCode);
+                System.out.println(caracteres[pos]);
+                as+=8;
+                pos++;
+           /* if(aux.charAt(0)=='1') //significa que es negativo
+            {
+                String xor = "11111111";
+                String convertido = Integer.toBinaryString(Integer.parseInt(aux, 2) ^ Integer.parseInt(xor, 2));
+                //convertido = Integer.toBinaryString(Integer.parseInt(convertido,2) | Integer.parseInt("1",2));
+                aux = convertido;
+                
+                int charCode = Integer.parseInt(aux, 2);
+                caracteres[pos] = (char)(-charCode-1);
+                as+=8;
+                pos++;
+            }
+            else
+            {*/ 
+        }
+        
+        //String cadFinal = new String(bval);
+                //Y despues desencriptarla
+        String desencriptado="";
         try {
             if(jRadioButton1.isSelected())
             {
@@ -345,16 +414,26 @@ public class PantallaDesencriptacion extends javax.swing.JFrame {
             }
             else
             {
-                desencriptado = algoritmo.desencriptarRC4(mensajeFinal, clave);
+                RC4 rc4 = new RC4(clave);
+                String cad = new String(caracteres);
+                
+                char[] result = rc4.decrypt(cad.toCharArray());
+                String resultadoFinal = new String(result);
+                desencriptado = resultadoFinal;
             }
         } catch (Exception ex) {
             Logger.getLogger(PantallaDesencriptacion.class.getName()).log(Level.SEVERE, null, ex);
         }
-        StringSelection stringSelection = new StringSelection (desencriptado);
-        Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
-        clpbrd.setContents (stringSelection, null);
-       
-        JOptionPane.showMessageDialog(null, desencriptado);
+        try {
+            FileOutputStream fos = new FileOutputStream("/Users/joseluisllinaresanton/Desktop/fichero1"+extension);
+            fos.write(desencriptado.getBytes());
+            fos.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(PantallaDescifrarFichero.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(PantallaDescifrarFichero.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        JOptionPane.showMessageDialog(null, "Finalizo.");
     }//GEN-LAST:event_jButton1ActionPerformed
 
     public char convertirBinarioALetra(String caracter)

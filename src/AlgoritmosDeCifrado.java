@@ -3,6 +3,7 @@ import static algoritmos.AES128.decrypt;
 import static algoritmos.AES128.encrypt;
 import algoritmos.RC4;
 import algoritmos.RC4.InvalidKeyException;
+import java.io.UnsupportedEncodingException;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -16,7 +17,7 @@ import algoritmos.RC4.InvalidKeyException;
  */
 public class AlgoritmosDeCifrado {
     
-    public String algoritmoRC4(String msg, String clave)
+    public String algoritmoRC4(String msg, String clave) throws UnsupportedEncodingException
     {
          System.out.println("RC4");
          String resultado = "";

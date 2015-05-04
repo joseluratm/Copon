@@ -2,6 +2,9 @@
 
 
 import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
@@ -48,6 +51,9 @@ public final class PantallaPrincipal extends javax.swing.JFrame {
         logo_imagen = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         img_principal = new javax.swing.JLabel();
+        Fichero = new javax.swing.JTextField();
+        BotonFichero = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
 
         jLabel1.setText("jLabel1");
 
@@ -114,11 +120,29 @@ public final class PantallaPrincipal extends javax.swing.JFrame {
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
+        Fichero.setBackground(new java.awt.Color(204, 204, 204));
+        Fichero.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                FicheroActionPerformed(evt);
+            }
+        });
+
+        BotonFichero.setText("Abrir...");
+        BotonFichero.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BotonFicheroActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setFont(new java.awt.Font("Devanagari Sangam MN", 0, 13)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(204, 204, 204));
+        jLabel2.setText("Fichero a esconder");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -132,15 +156,24 @@ public final class PantallaPrincipal extends javax.swing.JFrame {
                                 .addGap(32, 32, 32))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(txt_imagen, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(6, 6, 6)
+                                        .addComponent(jLabel2))
+                                    .addComponent(txt_imagen, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)))
                         .addComponent(boton_imagen))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(205, 205, 205)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(boton_descifrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(boton_cifrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(boton_cifrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(126, 126, 126)
+                        .addComponent(Fichero, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(BotonFichero)))
+                .addContainerGap(89, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(lbl_propietarios)
@@ -158,11 +191,17 @@ public final class PantallaPrincipal extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txt_imagen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(boton_imagen))
-                .addGap(38, 38, 38)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(BotonFichero)
+                    .addComponent(Fichero, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(boton_cifrar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(boton_descifrar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(5, 5, 5)
                 .addComponent(lbl_propietarios, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -183,10 +222,14 @@ public final class PantallaPrincipal extends javax.swing.JFrame {
 
     private void boton_descifrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boton_descifrarActionPerformed
         //TODO cambiar por pantallaDescifrar
-       
-       if(boton_descifrar.getText().contains("fichero"))
+       System.out.println(Fichero.getText());
+       if(!Fichero.getText().isEmpty() && !txt_imagen.getText().isEmpty())
        {
-            JOptionPane.showMessageDialog(null, "Se llamara a pantalla fichero");            
+            PantallaDescifrarFichero pcf;       
+            pcf = new PantallaDescifrarFichero(txt_imagen.getText());
+            pcf.setLocationRelativeTo(null);
+            pcf.show();
+
        }
         else if(!txt_imagen.getText().isEmpty())
        {
@@ -202,9 +245,18 @@ public final class PantallaPrincipal extends javax.swing.JFrame {
 
     private void boton_cifrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boton_cifrarActionPerformed
         
-        if(boton_cifrar.getText().contains("fichero"))
+        System.out.println(Fichero.getText());
+        if(!Fichero.getText().isEmpty() && !txt_imagen.getText().isEmpty())
         {
-            JOptionPane.showMessageDialog(null, "Se llamara a pantalla fichero");            
+            PantallaCifrarFichero pcf;
+            try {
+                pcf = new PantallaCifrarFichero(txt_imagen.getText(), Fichero.getText());
+                pcf.setLocationRelativeTo(null);
+                pcf.show();
+            } catch (IOException ex) {
+                Logger.getLogger(PantallaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
         }   
         else if(!txt_imagen.getText().isEmpty())
         {
@@ -249,6 +301,21 @@ public final class PantallaPrincipal extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txt_imagenActionPerformed
 
+    private void FicheroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FicheroActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_FicheroActionPerformed
+
+    private void BotonFicheroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonFicheroActionPerformed
+        JFileChooser fileChooser = new JFileChooser();
+        boolean EsImagen = false;
+        int returnValue = fileChooser.showOpenDialog(null);
+        if(returnValue == JFileChooser.APPROVE_OPTION)
+        {
+            File selected = fileChooser.getSelectedFile();
+            Fichero.setText(selected.getPath());
+        }
+    }//GEN-LAST:event_BotonFicheroActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -284,11 +351,14 @@ public final class PantallaPrincipal extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton BotonFichero;
+    private javax.swing.JTextField Fichero;
     private javax.swing.JButton boton_cifrar;
     private javax.swing.JButton boton_descifrar;
     private javax.swing.JButton boton_imagen;
     private javax.swing.JLabel img_principal;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;

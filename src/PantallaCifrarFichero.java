@@ -1,5 +1,7 @@
 
 
+
+import algoritmos.RC4;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -7,15 +9,24 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.nio.CharBuffer;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import org.apache.commons.io.IOUtils;
 
 
 
@@ -30,37 +41,41 @@ import javax.swing.JOptionPane;
  *
  * @author joseluisllinaresanton
  */
-public final class PantallaCifrado extends javax.swing.JFrame {
+public final class PantallaCifrarFichero extends javax.swing.JFrame {
 
     /**
      * Creates new form PantallaPrincipal
      */
     private String rutica;
     private int pixeles;
+    private BufferedReader in;
+    private byte[] bytes;
+    private String extension;
+    private CharBuffer asciis;
     
-    public PantallaCifrado() {
+    public PantallaCifrarFichero() {
         initComponents();
        
     }
-    public PantallaCifrado(String accion, String RutaImagen) {
+    public PantallaCifrarFichero(String RutaImagen, String fichero) throws FileNotFoundException, IOException {
         initComponents();
         this.rutica = RutaImagen;
         VerImagen(RutaImagen);
-        if(accion == "cifrar")
-        {
-            this.setTitle("Cifrando");
-        }
-        else
-        {
-            this.setTitle("Descifrando");            
-        }
+        this.setTitle("Cifrando");
+        extension = fichero.substring(fichero.indexOf(".")+1);
+        InputStreamReader input = new InputStreamReader(new FileInputStream(fichero));
+        in = new BufferedReader(input);
+        bytes = IOUtils.toByteArray(in, "latin1");
+        String s = new String(bytes);
+        
+        int valor = s.getBytes().length;
+        this.jTextField1.setText(Integer.toString(valor));  
     }
     
     public void VerImagen(String ruta)
     {
         BufferedImage imagenEscalada = EscalarImagen(label_imagen.getWidth(), label_imagen.getHeight(), ruta);
         label_imagen.setIcon(new ImageIcon((Image)imagenEscalada));
-        label_imagen1.setIcon(new ImageIcon((Image)imagenEscalada));
     }
     
     public BufferedImage EscalarImagen(int WIDTH, int HEIGHT, String filename)
@@ -107,28 +122,21 @@ public final class PantallaCifrado extends javax.swing.JFrame {
         jRadioButton2 = new javax.swing.JRadioButton();
         label_imagen = new javax.swing.JLabel();
         lbl_mensaje = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
         jLabel2 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jPasswordField1 = new javax.swing.JPasswordField();
         jLabel3 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        label_imagen1 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
-        lbl_mensaje1 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
 
-        setPreferredSize(new java.awt.Dimension(1140, 575));
         setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(51, 51, 51));
@@ -158,7 +166,7 @@ public final class PantallaCifrado extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(53, Short.MAX_VALUE)
                 .addComponent(img_candado)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -185,12 +193,7 @@ public final class PantallaCifrado extends javax.swing.JFrame {
 
         lbl_mensaje.setFont(new java.awt.Font("DejaVu Sans", 0, 12)); // NOI18N
         lbl_mensaje.setForeground(new java.awt.Color(204, 204, 204));
-        lbl_mensaje.setText("Mensaje");
-
-        jTextArea1.setBackground(new java.awt.Color(204, 204, 204));
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        lbl_mensaje.setText("Tamaño en bytes del fichero a encriptar:");
 
         jLabel2.setFont(new java.awt.Font("DejaVu Sans", 0, 11)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(204, 204, 204));
@@ -243,12 +246,6 @@ public final class PantallaCifrado extends javax.swing.JFrame {
         jLabel5.setForeground(new java.awt.Color(204, 204, 204));
         jLabel5.setText("Imagen original");
 
-        jLabel6.setFont(new java.awt.Font("DejaVu Sans", 0, 14)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(204, 204, 204));
-        jLabel6.setText("Imagen codificada");
-
-        label_imagen1.setBackground(new java.awt.Color(204, 204, 204));
-
         jLabel1.setFont(new java.awt.Font("DejaVu Sans", 0, 12)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(204, 204, 204));
         jLabel1.setText("Estadisticas");
@@ -265,91 +262,70 @@ public final class PantallaCifrado extends javax.swing.JFrame {
         jLabel9.setForeground(new java.awt.Color(204, 204, 204));
         jLabel9.setText("Pixeles modificados:");
 
-        jTextArea2.setBackground(new java.awt.Color(204, 204, 204));
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(5);
-        jScrollPane2.setViewportView(jTextArea2);
-
-        lbl_mensaje1.setFont(new java.awt.Font("DejaVu Sans", 0, 12)); // NOI18N
-        lbl_mensaje1.setForeground(new java.awt.Color(204, 204, 204));
-        lbl_mensaje1.setText("Mensaje cifrado");
+        jTextField1.setText("jTextField1");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(31, 31, 31)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lbl_mensaje)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 510, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(52, 52, 52)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(label_imagen, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
-                                .addComponent(label_imagen1, javax.swing.GroupLayout.PREFERRED_SIZE, 457, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(38, 38, 38))))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(40, 40, 40)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 210, Short.MAX_VALUE)
-                                .addGap(42, 42, 42)
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel1)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addGap(28, 28, 28)
                                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addComponent(jLabel8)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jLabel10))
-                                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addComponent(jLabel7)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(jLabel4))
-                                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addComponent(jLabel9)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(jLabel11))))
-                                    .addComponent(lbl_mensaje1)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 510, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel6))))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                            .addComponent(jLabel8)
+                                            .addComponent(jLabel7)
+                                            .addComponent(jLabel9))))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(42, 42, 42)
+                                        .addComponent(jLabel10))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(36, 36, 36)
+                                        .addComponent(jLabel4))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(39, 39, 39)
+                                        .addComponent(jLabel11)))))
+                        .addContainerGap(39, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(label_imagen, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(187, 187, 187))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addGap(367, 367, 367))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(lbl_mensaje)
+                                .addGap(307, 307, 307))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(352, 352, 352))))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addComponent(jLabel5))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(39, 39, 39)
-                        .addComponent(jLabel6)))
+                .addGap(38, 38, 38)
+                .addComponent(jLabel5)
+                .addGap(12, 12, 12)
+                .addComponent(label_imagen, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(label_imagen1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(label_imagen, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(10, 10, 10)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(lbl_mensaje)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(lbl_mensaje1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lbl_mensaje)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(73, 73, 73)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -378,7 +354,9 @@ public final class PantallaCifrado extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1140, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 912, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -391,108 +369,229 @@ public final class PantallaCifrado extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-
         if(jPasswordField1.getText().length()>=5)
         {
-            File imgPath = new File(rutica);
+            try {
+                //pillamos la imagen que e muetra
+                File imgPath = new File(rutica);
+                    
 
-            String mensajeInicial = jTextArea1.getText();
-            String mensaje="";
-            String clave = jPasswordField1.getText();
-            int valorClave = valorDeClave(clave);
-            long totalTime=0;
-            long totalTimeOcultacion=0;
-            
-            AlgoritmosDeCifrado algoritmo = new AlgoritmosDeCifrado();
-            if(jRadioButton1.isSelected()) //significa que se ha elegido AES
-            {
+                String clave = jPasswordField1.getText();
+                //asignamos la clave
+                int valorClave = valorDeClave(clave);
+                long totalTime=0;
+                long totalTimeOcultacion=0;
+                String resultado="";
+                int[] valores = new int[resultado.length()];
+                
+                if(jRadioButton1.isSelected()) //significa que se ha elegido AES
+                {
 
-            }
-            else //significa que se ha elegido RC4. Aplica la encriptación al mensaje con la clave proporcionada.
-            {
+                }
+                else //significa que se ha elegido RC4. Aplica la encriptación al mensaje con la clave proporcionada.
+                {
+                    //Encriptamos
+                    long startTime = System.currentTimeMillis();
+                    RC4 rc4 = new RC4(clave);
+                    
+                    String mensaje = new String(bytes);
+                    char[] result = rc4.encrypt(mensaje.toCharArray());
+                    resultado = new String(result);   
+                    System.out.println(resultado);
+                    valores = new int[resultado.length()];
+//                    System.out.println(asciis.get((byte)resultado.charAt(0) &0xFF)+"este es el 1");
+                    for(int k = 0; k<resultado.length(); k++)
+                    {
+                        valores[k] = ((byte)resultado.charAt(k) & 0xFF);
+                    }
+                    long endTime   = System.currentTimeMillis();
+                    totalTime = endTime - startTime;
+                    
+                }
                 long startTime = System.currentTimeMillis();
-                mensaje = algoritmo.algoritmoRC4(mensajeInicial, clave); 
-                long endTime   = System.currentTimeMillis();
-                totalTime = endTime - startTime;
-            }
-            long startTime = System.currentTimeMillis();
-            String mensajeEncriptado = mensaje;
-            mensaje = convertirABinario(mensaje); //Se pasa a binario
-            BufferedImage bufferedImage = null;
+                //Convertimos a binario cada uno de los bytes.
+                int r =0;
+                String[] almacen = new String[bytes.length];
+                while(bytes.length>r)
+                {
+                    
+                    String s1 = String.format("%8s", Integer.toBinaryString(valores[r])).replace(' ', '0');
+                    almacen[r]= s1;
+                    int charCode = Integer.parseInt(almacen[r], 2);
+                    System.out.println(charCode);
+                    r++;
+                }
+                System.out.println(almacen.length+"tamaño almacen");
+                
+                //abrimos la imagen.
+                BufferedImage bufferedImage = null;
+                try {
+                    bufferedImage = ImageIO.read(imgPath);
+                } catch (IOException ex) {
+                    Logger.getLogger(PantallaCifrado.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                int height = bufferedImage.getHeight();
+                int width = bufferedImage.getWidth();
 
-            try {
-                bufferedImage = ImageIO.read(imgPath);
-            } catch (IOException ex) {
-                Logger.getLogger(PantallaCifrado.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            int height = bufferedImage.getHeight();
-            int width = bufferedImage.getWidth();
+                WritableRaster raster = bufferedImage.getRaster();
+                DataBufferByte data   = (DataBufferByte) raster.getDataBuffer();
 
-            WritableRaster raster = bufferedImage.getRaster();
-            DataBufferByte data   = (DataBufferByte) raster.getDataBuffer();
-
-            Random rnd = new Random();
-            rnd.setSeed(data.getData().length+valorClave);  //la semilla será el valor de la clave + los datos.
-
-
-            int i =0;
-            while(i<mensaje.length())
-            {
-                int posicion = rnd.nextInt(((data.getData().length-1) - 1) + 1)+ 1;
-                data.getData()[posicion] = lsb(data.getData()[posicion], mensaje.charAt(i));  
-                i++;
-            }
-
-
-
-            //coge los nuevos datos y genera la nueva imagen.
-            //TYPE_3BYTE_BGR
-            BufferedImage newImage = new BufferedImage(width, height, bufferedImage.getType());
-            WritableRaster rasterFinal = newImage.getRaster();
-            rasterFinal.setDataElements(0, 0, width, height, data.getData());
-            newImage.setData(raster);
-            Color mycolor = new Color(mensajeInicial.length(),0, 0);
-            try {
-                //la posicion donde esta el tamaño tambien va escondida
-                //segun la clave y el tamaño de la imagen.
-                Random posiH = new Random();
-                posiH.setSeed(valorClave);
-                int posicionTamTextH = posiH.nextInt((newImage.getHeight() - 1) + 1)+ 1;
-                System.out.println(posicionTamTextH);
-                Random posiW = new Random();
-                posiW.setSeed(valorClave);
-                int posicionTamTextW = posiW.nextInt((newImage.getWidth() - 1) + 1)+ 1;
-                System.out.println(posicionTamTextW);
-                newImage.setRGB(posicionTamTextH/2, posicionTamTextW/2, mycolor.getRGB()); 
-                ImageIO.write(newImage, "png", new File("/Users/joseluisllinaresanton/Desktop/"+mensajeInicial+".png"));
+                Random rnd = new Random();
+                rnd.setSeed(data.getData().length+valorClave);  //la semilla será el valor de la clave + los datos.
+                
+                int i =0;
+                while(i<almacen.length)
+                {
+                    for(int j = 0; j<8; j++)
+                    {
+                        int posicion = rnd.nextInt(((data.getData().length-1) - 1) + 1)+ 1;
+                        data.getData()[posicion] = lsb(data.getData()[posicion], almacen[i].charAt(j));
+                    }
+                    i++;
+                }
+                //TODO que pille extension mas larga
+                byte[] b = extension.getBytes();
+                int k =0;
+                String[] exten = new String[3];
+                while(b.length>k)
+                {
+                    String s3 = String.format("%8s", Integer.toBinaryString(b[k] & 0xFF)).replace(' ', '0');
+                    exten[k] = s3; 
+                    k++;
+                }
                 
                 
+                //coge los nuevos datos y genera la nueva imagen.
+                //TYPE_3BYTE_BGR
+                BufferedImage newImage = new BufferedImage(width, height, bufferedImage.getType());
+                WritableRaster rasterFinal = newImage.getRaster();
+                rasterFinal.setDataElements(0, 0, width, height, data.getData());
+                newImage.setData(raster);
                 
-                BufferedImage imagenEscalada = EscalarImagen(label_imagen.getWidth(), label_imagen.getHeight(), "/Users/joseluisllinaresanton/Desktop/"+mensajeInicial+".png");
-                label_imagen1.setIcon(new ImageIcon((Image)imagenEscalada));
-                long EndTime = System.currentTimeMillis();
-                totalTimeOcultacion = EndTime - startTime;
-                jTextArea2.setText(mensajeEncriptado);
-                jLabel4.setText(totalTime+ " milisegundos para cifrar el mensaje.");
-                jLabel10.setText(totalTimeOcultacion +" milisegundos para ocultar el mensaje.");
-                jLabel11.setText(pixeles + " modificados en total.");
-            } catch (IOException ex)
-            {
-                Logger.getLogger(PantallaCifrado.class.getName()).log(Level.SEVERE, null, ex);
-            }
+                Color mycolor = new Color(Integer.parseInt(exten[0], 2),Integer.parseInt(exten[1], 2), Integer.parseInt(exten[2], 2));
+                String bin = Integer.toBinaryString(almacen.length);
+                String cadenaRojo ="";
+                String cadenaVerde ="";
+                String cadenaAzul ="";
+                int contador=0;
+                
+                
+                ArrayList<Color> tamColores = new ArrayList<Color>();
+                
+                for(int tamCadenaAlmacen=0; tamCadenaAlmacen<=bin.length();tamCadenaAlmacen++)
+                {
+                    int num = tamCadenaAlmacen%24;
+                    if(tamCadenaAlmacen%24 == 0 && tamCadenaAlmacen != 0 || tamCadenaAlmacen==bin.length())
+                    {
+                        if(cadenaVerde.length()!=8)
+                        {
+                            int faltan = 8-cadenaVerde.length();
+                            String auxiliar="";
+                            if(faltan!=8)
+                            {
+                                for(int numerito = 0; numerito<faltan; numerito++)
+                                {
+                                    auxiliar+="0";
+                                }
+                                cadenaVerde = auxiliar.concat(cadenaVerde);
+                            }
+                            else
+                            {
+                                cadenaVerde = "0";
+                            }
+                        }
+                        if(cadenaAzul.length()!=8)
+                        {
+                            int faltan = 8-cadenaAzul.length();
+                            String auxiliar="";
+                            if(faltan!=8)
+                            {
+                                for(int numerito = 0; numerito<faltan; numerito++)
+                                {
+                                    auxiliar+="0";   
+                                }
+                                cadenaAzul = auxiliar.concat(cadenaAzul);  
+                            }
+                            else
+                            {
+                                cadenaAzul="0";
+                            }
+                        }
+                        Color myColorTam= new Color(Integer.parseInt(cadenaRojo, 2),Integer.parseInt(cadenaVerde, 2), Integer.parseInt(cadenaAzul, 2));
+                        tamColores.add(myColorTam);
+                        contador++;
+                        cadenaRojo ="";
+                        cadenaVerde ="";
+                        cadenaAzul ="";
+                        if(tamCadenaAlmacen==bin.length())
+                        {
+                            break;
+                        }
+                    }
+                    if(num<8)
+                    {
+                        cadenaRojo += bin.charAt(tamCadenaAlmacen);
+                    }
+                    if(num>=8 && num<16)
+                    {
+                        cadenaVerde += bin.charAt(tamCadenaAlmacen);
+                    }
+                    if(num>=16 && num<24)
+                    {
+                        cadenaAzul += bin.charAt(tamCadenaAlmacen);
+                    }
+                }
+                try {
+                    //la posicion donde esta el tamaño tambien va escondida
+                    //segun la clave y el tamaño de la imagen.
+                    Random posiH = new Random();
+                    posiH.setSeed(valorClave);
+                    int posicionTamTextH = posiH.nextInt((newImage.getHeight() - 1) + 1)+ 1;
+                    posicionTamTextH = posicionTamTextH/2;
+                    System.out.println(posicionTamTextH);
+                    Random posiW = new Random();
+                    posiW.setSeed(valorClave);
+                    int posicionTamTextW = posiW.nextInt((newImage.getWidth() - 1) + 1)+ 1;
+                    posicionTamTextW = posicionTamTextW/2;
+                    System.out.println(posicionTamTextW);
+                    newImage.setRGB(posicionTamTextH, posicionTamTextW, mycolor.getRGB()); //asignamos la extension
+                    Color total = new Color(tamColores.size(), 0,0);
+                    newImage.setRGB(posicionTamTextH+1, posicionTamTextW+1, total.getRGB()); //aisgnamos el tamaño del archivo
+                    for(int totalPixeles = 0; totalPixeles<tamColores.size(); totalPixeles++)
+                    {
+                        newImage.setRGB(posicionTamTextH+2+totalPixeles, posicionTamTextW+2+totalPixeles, tamColores.get(totalPixeles).getRGB()); //guardamos los pixeles donde estara escondido el tamaño del fichero.
+                    }
+                    ImageIO.write(newImage, "png", new File("/Users/joseluisllinaresanton/Desktop/fichero.png"));
+
+                    BufferedImage imagenEscalada = EscalarImagen(label_imagen.getWidth(), label_imagen.getHeight(), "/Users/joseluisllinaresanton/Desktop/fichero.png");
+                    label_imagen.setIcon(new ImageIcon((Image)imagenEscalada));
+                    long EndTime = System.currentTimeMillis();
+                    totalTimeOcultacion = EndTime - startTime;
+
+                    jLabel4.setText(totalTime+ " milisegundos para cifrar el mensaje.");
+                    jLabel10.setText(totalTimeOcultacion +" milisegundos para ocultar el mensaje.");
+                    jLabel11.setText(pixeles + " modificados en total.");
+                } catch (IOException ex)
+                {
+                    Logger.getLogger(PantallaCifrado.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } catch (RC4.InvalidKeyException ex) {
+                Logger.getLogger(PantallaCifrarFichero.class.getName()).log(Level.SEVERE, null, ex);
+            } /*catch (UnsupportedEncodingException ex) {
+                Logger.getLogger(PantallaCifrarFichero.class.getName()).log(Level.SEVERE, null, ex);
+            }*/
         }
         else
         {
-            JOptionPane.showMessageDialog(null, "Tamaño de clave demasiado pequeña. Pruebe con otra.");  
+            JOptionPane.showMessageDialog(null, "Tamaño de clave demasiado pequeña. Pruebe con otra.");
         }
-        
-        
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton2ActionPerformed
         if(jRadioButton2.isSelected())
         {
-            jRadioButton1.setSelected(false); 
+            jRadioButton1.setSelected(false);
         }
     }//GEN-LAST:event_jRadioButton2ActionPerformed
 
@@ -603,7 +702,6 @@ public final class PantallaCifrado extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
@@ -613,13 +711,8 @@ public final class PantallaCifrado extends javax.swing.JFrame {
     private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JRadioButton jRadioButton2;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextArea jTextArea2;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel label_imagen;
-    private javax.swing.JLabel label_imagen1;
     private javax.swing.JLabel lbl_mensaje;
-    private javax.swing.JLabel lbl_mensaje1;
     // End of variables declaration//GEN-END:variables
 }
