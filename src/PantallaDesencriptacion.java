@@ -1,3 +1,4 @@
+import algoritmos.RC4;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -84,7 +85,6 @@ public class PantallaDesencriptacion extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         img_candado = new javax.swing.JLabel();
-        jRadioButton1 = new javax.swing.JRadioButton();
         jRadioButton2 = new javax.swing.JRadioButton();
         jPanel3 = new javax.swing.JPanel();
         jPasswordField1 = new javax.swing.JPasswordField();
@@ -109,13 +109,6 @@ public class PantallaDesencriptacion extends javax.swing.JFrame {
 
         img_candado.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/lock77.png"))); // NOI18N
 
-        jRadioButton1.setText("AES");
-        jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton1ActionPerformed(evt);
-            }
-        });
-
         jRadioButton2.setSelected(true);
         jRadioButton2.setText("RC4");
         jRadioButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -132,24 +125,20 @@ public class PantallaDesencriptacion extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(img_candado)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jRadioButton2)
-                    .addComponent(jRadioButton1))
+                .addComponent(jRadioButton2)
                 .addGap(190, 190, 190))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap(13, Short.MAX_VALUE)
-                        .addComponent(jRadioButton1)
-                        .addGap(24, 24, 24)
-                        .addComponent(jRadioButton2))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
-                        .addComponent(img_candado)))
-                .addContainerGap(19, Short.MAX_VALUE))
+                        .addComponent(img_candado))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(33, 33, 33)
+                        .addComponent(jRadioButton2)))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         jPanel3.setBackground(new java.awt.Color(51, 51, 51));
@@ -259,18 +248,7 @@ public class PantallaDesencriptacion extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
-        if(jRadioButton1.isSelected())
-        {
-            jRadioButton2.setSelected(false);
-        }
-    }//GEN-LAST:event_jRadioButton1ActionPerformed
-
     private void jRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton2ActionPerformed
-        if(jRadioButton2.isSelected())
-        {
-            jRadioButton1.setSelected(false);
-        }
     }//GEN-LAST:event_jRadioButton2ActionPerformed
 
     public int valorDeClave(String clave)
@@ -334,27 +312,22 @@ public class PantallaDesencriptacion extends javax.swing.JFrame {
             }
             i++;
         }
-        System.out.println(mensajeFinal);
-        String desencriptado = "";
+        char[] desencriptado = null;
         //Y despues desencriptarla
-        AlgoritmosDeCifrado algoritmo = new AlgoritmosDeCifrado();
+        RC4 algoritmo = new RC4();        
         try {
-            if(jRadioButton1.isSelected())
-            {
-                
-            }
-            else
-            {
-                desencriptado = algoritmo.desencriptarRC4(mensajeFinal, clave);
-            }
+            algoritmo.setKey(clave);
+            
+            desencriptado = algoritmo.decrypt(mensajeFinal.toCharArray());
         } catch (Exception ex) {
             Logger.getLogger(PantallaDesencriptacion.class.getName()).log(Level.SEVERE, null, ex);
         }
-        StringSelection stringSelection = new StringSelection (desencriptado);
+        String copy = new String(desencriptado);
+        StringSelection stringSelection = new StringSelection (copy);
         Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
         clpbrd.setContents (stringSelection, null);
        
-        JOptionPane.showMessageDialog(null, desencriptado);
+        JOptionPane.showMessageDialog(null, copy);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     public char convertirBinarioALetra(String caracter)
@@ -427,7 +400,6 @@ public class PantallaDesencriptacion extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JLabel label_imagen;
     // End of variables declaration//GEN-END:variables

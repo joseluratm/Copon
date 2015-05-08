@@ -1,8 +1,10 @@
+import algoritmos.ExtendedAscii;
 import algoritmos.RC4;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
@@ -15,9 +17,10 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.nio.CharBuffer;
-import java.util.ArrayList;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import javax.swing.SwingUtilities;
+
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -36,8 +39,6 @@ public class PantallaDescifrarFichero extends javax.swing.JFrame {
      */
     private String rutica;
     private String extension;
-    private CharBuffer asciis;
-    private RC4 RC4;
     
     public PantallaDescifrarFichero() {
         initComponents();
@@ -90,12 +91,13 @@ public class PantallaDescifrarFichero extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         img_candado = new javax.swing.JLabel();
-        jRadioButton1 = new javax.swing.JRadioButton();
         jRadioButton2 = new javax.swing.JRadioButton();
         jPanel3 = new javax.swing.JPanel();
         jPasswordField1 = new javax.swing.JPasswordField();
         jLabel3 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
 
         jPanel1.setBackground(new java.awt.Color(51, 51, 51));
@@ -115,13 +117,6 @@ public class PantallaDescifrarFichero extends javax.swing.JFrame {
 
         img_candado.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/lock77.png"))); // NOI18N
 
-        jRadioButton1.setText("AES");
-        jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton1ActionPerformed(evt);
-            }
-        });
-
         jRadioButton2.setSelected(true);
         jRadioButton2.setText("RC4");
         jRadioButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -138,24 +133,20 @@ public class PantallaDescifrarFichero extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(img_candado)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jRadioButton2)
-                    .addComponent(jRadioButton1))
+                .addComponent(jRadioButton2)
                 .addGap(190, 190, 190))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap(13, Short.MAX_VALUE)
-                        .addComponent(jRadioButton1)
-                        .addGap(24, 24, 24)
-                        .addComponent(jRadioButton2))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
-                        .addComponent(img_candado)))
-                .addContainerGap(19, Short.MAX_VALUE))
+                        .addComponent(img_candado))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(35, 35, 35)
+                        .addComponent(jRadioButton2)))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         jPanel3.setBackground(new java.awt.Color(51, 51, 51));
@@ -174,31 +165,43 @@ public class PantallaDescifrarFichero extends javax.swing.JFrame {
             }
         });
 
+        jLabel4.setFont(new java.awt.Font("DejaVu Sans", 0, 11)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(204, 204, 204));
+        jLabel4.setText("Guardar como...");
+
+        jTextField1.setText("fichero");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(31, 31, 31)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3)
-                    .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(19, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(76, Short.MAX_VALUE)
                 .addComponent(jButton1)
                 .addGap(74, 74, 74))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(31, 31, 31)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel3)
+                    .addComponent(jPasswordField1, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
+                    .addComponent(jTextField1))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jLabel1.setForeground(new java.awt.Color(204, 204, 204));
@@ -265,18 +268,7 @@ public class PantallaDescifrarFichero extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
-        if(jRadioButton1.isSelected())
-        {
-            jRadioButton2.setSelected(false);
-        }
-    }//GEN-LAST:event_jRadioButton1ActionPerformed
-
     private void jRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton2ActionPerformed
-        if(jRadioButton2.isSelected())
-        {
-            jRadioButton1.setSelected(false);
-        }
     }//GEN-LAST:event_jRadioButton2ActionPerformed
 
     public int valorDeClave(String clave)
@@ -295,10 +287,11 @@ public class PantallaDescifrarFichero extends javax.swing.JFrame {
         File imgPath = new File(rutica);
         String clave = jPasswordField1.getText();
         int valorClave = valorDeClave(clave);
-        //Ahora hay que hacer la inversa. Sacar la cadena de la imagen.
+        
         
         BufferedImage bufferedImage = null;
-        
+        if(clave.length()>=5)
+        {
         try {
             bufferedImage = ImageIO.read(imgPath);
         } catch (IOException ex) {
@@ -342,123 +335,88 @@ public class PantallaDescifrarFichero extends javax.swing.JFrame {
         extension = "."+str3+str2+str1; //Sacamos la extensión.
                 
         Color tamArchivo = new Color(bufferedImage.getRGB(posicionTamTextH+1, posicionTamTextW+1));
-        int tamFichero = tamArchivo.getRed();
-        ArrayList<Color> tamColores = new ArrayList<Color>();
-        for(int totalPixeles = 0; totalPixeles<tamFichero; totalPixeles++)
-        {
-             Color ColorPixeles = new Color(bufferedImage.getRGB(posicionTamTextH+2+totalPixeles, posicionTamTextW+2+totalPixeles));
-             tamColores.add(ColorPixeles);
-        }
-        int resultado =0;
-        System.out.println(tamColores.get(0)+"colorsito");
-        for(int sacarTamaño = 0; sacarTamaño< tamColores.size(); sacarTamaño++)
-        {
-             String valor ="";
-             valor += Integer.toBinaryString(tamColores.get(sacarTamaño).getRed());
-             if(!"0".equals(Integer.toBinaryString(tamColores.get(sacarTamaño).getGreen())))
-             {
-                 valor += Integer.toBinaryString(tamColores.get(sacarTamaño).getGreen());
-             }
-             if(!"0".equals(Integer.toBinaryString(tamColores.get(sacarTamaño).getBlue())))
-             {
-                 valor += Integer.toBinaryString(tamColores.get(sacarTamaño).getBlue());                 
-             }             
-             resultado = Integer.parseInt(valor, 2);
-        }
-        System.out.println(resultado+"tamaño en bytes encriptado."); //ya tenemos el puto tamaño del fichero encriptado.
+        String hex = String.format("#%02x%02x%02x", tamArchivo.getRed(), tamArchivo.getGreen(), tamArchivo.getBlue());
         
-
+        hex = hex.substring(1);
+        int resultado=0;
+        resultado = Integer.parseInt(hex, 16);
+        resultado = resultado*8;
+        
         int p =0;
-        while(p<resultado*8)
+        int valor = ((data.getData().length-1) - 1) + 1;
+        char[] caract = new char[resultado];
+        while(p<resultado)
         {
-            int posicion = rnd.nextInt(((data.getData().length-1) - 1) + 1)+ 1;
-            mensajeBinario += getLSB(data.getData()[posicion]);
-            p++;
+            int posicion = rnd.nextInt(valor)+ 1;
+            String binario = String.format("%8s", Integer.toBinaryString(data.getData()[posicion] & 0xFF)).replace(' ', '0');
+            caract[p] = binario.charAt(binario.length()-1);
+            p=p+1;
         }
+        mensajeBinario = new String(caract);
+
+        
+        
         int as =0;
         int pos =0;
-        char[] caracteres = new char[mensajeBinario.length()/8];
+        byte[] caracteres = new byte[mensajeBinario.length()/8];
+        
         
         
         while(as<mensajeBinario.length())
         {
+            ExtendedAscii as2 = new ExtendedAscii();
             String aux = mensajeBinario.substring(as, as+8);
-                int charCode = Integer.parseInt(aux, 2);
-                caracteres[pos] = asciis.get(charCode);
-                System.out.println(caracteres[pos]);
-                as+=8;
-                pos++;
-           /* if(aux.charAt(0)=='1') //significa que es negativo
+            int charCode=0;
+            if(aux.charAt(0)=='1')//significa que es negativo
             {
-                String xor = "11111111";
-                String convertido = Integer.toBinaryString(Integer.parseInt(aux, 2) ^ Integer.parseInt(xor, 2));
-                //convertido = Integer.toBinaryString(Integer.parseInt(convertido,2) | Integer.parseInt("1",2));
-                aux = convertido;
-                
-                int charCode = Integer.parseInt(aux, 2);
-                caracteres[pos] = (char)(-charCode-1);
-                as+=8;
-                pos++;
+                charCode = Integer.parseInt(aux, 2)- 256;
             }
-            else
-            {*/ 
+            else charCode = Integer.parseInt(aux, 2);
+
+            byte b = (byte) charCode;
+
+            caracteres[pos] = b;
+            as+=8;
+            pos++;
+
         }
-        
-        //String cadFinal = new String(bval);
-                //Y despues desencriptarla
+       
         String desencriptado="";
         try {
-            if(jRadioButton1.isSelected())
-            {
+                //RC4 rc4 = new RC4();
+                //rc4.setKey(clave);
+                //char[] result=null;
                 
-            }
-            else
-            {
-                RC4 rc4 = new RC4(clave);
-                String cad = new String(caracteres);
+                //result = rc4.decrypt(car.toCharArray());
+                //String resultadoFinal = new String(result);
+                //String resultadoFinal = new String(car.toCharArray());
                 
-                char[] result = rc4.decrypt(cad.toCharArray());
-                String resultadoFinal = new String(result);
-                desencriptado = resultadoFinal;
-            }
+                //desencriptado = resultadoFinal;
         } catch (Exception ex) {
             Logger.getLogger(PantallaDesencriptacion.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
-            FileOutputStream fos = new FileOutputStream("/Users/joseluisllinaresanton/Desktop/fichero1"+extension);
+            /*FileOutputStream fos = new FileOutputStream("/Users/joseluisllinaresanton/Desktop/fichero1"+extension);
             fos.write(desencriptado.getBytes());
-            fos.close();
+            fos.close();*/
+            Path path = Paths.get("/Users/joseluisllinaresanton/Desktop/"+jTextField1.getText()+extension);
+            java.nio.file.Files.write(path, caracteres);
+            
         } catch (FileNotFoundException ex) {
             Logger.getLogger(PantallaDescifrarFichero.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(PantallaDescifrarFichero.class.getName()).log(Level.SEVERE, null, ex);
         }
         JOptionPane.showMessageDialog(null, "Finalizo.");
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(null, "Clave demasiado pequeña.");
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    public char convertirBinarioALetra(String caracter)
-    {
-        int num=Integer.parseInt(caracter,2);
-        return (char)num;
-    }
+
     
-    public char getLSB(byte s)
-    {
-     String binario = byteABinario(s);  
-     return binario.charAt(binario.length()-1);
-    }
-    
-    public String byteABinario(byte s)
-    {
-            int i2 = s & 0xFF;
-            String binario = "";
-            for (int i = 0; i < 8; i++)
-            {
-                binario = "" + (i2 % 2) + binario;
-                i2 = i2/ 2;
-            }
-            return binario;
-    }
     
     /**
      * @param args the command line arguments
@@ -501,13 +459,14 @@ public class PantallaDescifrarFichero extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JRadioButton jRadioButton2;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel label_imagen;
     // End of variables declaration//GEN-END:variables
 }

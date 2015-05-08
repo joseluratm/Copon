@@ -1,7 +1,5 @@
-
-
-
 import algoritmos.RC4;
+import algoritmos.ExtendedAscii;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -9,24 +7,22 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
-import java.io.BufferedReader;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.nio.CharBuffer;
-import java.util.ArrayList;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-import org.apache.commons.io.IOUtils;
 
 
 
@@ -48,10 +44,8 @@ public final class PantallaCifrarFichero extends javax.swing.JFrame {
      */
     private String rutica;
     private int pixeles;
-    private BufferedReader in;
     private byte[] bytes;
     private String extension;
-    private CharBuffer asciis;
     
     public PantallaCifrarFichero() {
         initComponents();
@@ -64,12 +58,10 @@ public final class PantallaCifrarFichero extends javax.swing.JFrame {
         this.setTitle("Cifrando");
         extension = fichero.substring(fichero.indexOf(".")+1);
         InputStreamReader input = new InputStreamReader(new FileInputStream(fichero));
-        in = new BufferedReader(input);
-        bytes = IOUtils.toByteArray(in, "latin1");
-        String s = new String(bytes);
-        
-        int valor = s.getBytes().length;
-        this.jTextField1.setText(Integer.toString(valor));  
+        Path path = Paths.get(fichero);
+        bytes = Files.readAllBytes(path);
+        StringBuilder sb = new StringBuilder();
+        this.jTextField1.setText(Integer.toString(bytes.length));  
     }
     
     public void VerImagen(String ruta)
@@ -118,7 +110,6 @@ public final class PantallaCifrarFichero extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         img_candado = new javax.swing.JLabel();
-        jRadioButton1 = new javax.swing.JRadioButton();
         jRadioButton2 = new javax.swing.JRadioButton();
         label_imagen = new javax.swing.JLabel();
         lbl_mensaje = new javax.swing.JLabel();
@@ -146,13 +137,6 @@ public final class PantallaCifrarFichero extends javax.swing.JFrame {
 
         img_candado.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Recursos/lock77.png"))); // NOI18N
 
-        jRadioButton1.setText("AES");
-        jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton1ActionPerformed(evt);
-            }
-        });
-
         jRadioButton2.setSelected(true);
         jRadioButton2.setText("RC4");
         jRadioButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -169,24 +153,20 @@ public final class PantallaCifrarFichero extends javax.swing.JFrame {
                 .addContainerGap(53, Short.MAX_VALUE)
                 .addComponent(img_candado)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jRadioButton2)
-                    .addComponent(jRadioButton1))
+                .addComponent(jRadioButton2)
                 .addGap(190, 190, 190))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap(13, Short.MAX_VALUE)
-                        .addComponent(jRadioButton1)
-                        .addGap(24, 24, 24)
-                        .addComponent(jRadioButton2))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
-                        .addComponent(img_candado)))
-                .addContainerGap(19, Short.MAX_VALUE))
+                        .addComponent(img_candado))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(36, 36, 36)
+                        .addComponent(jRadioButton2)))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         label_imagen.setBackground(new java.awt.Color(204, 204, 204));
@@ -371,196 +351,107 @@ public final class PantallaCifrarFichero extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if(jPasswordField1.getText().length()>=5)
         {
+            File imgPath = new File(rutica);
+            String clave = jPasswordField1.getText();
+            
+            int valorClave = valorDeClave(clave);
+            long totalTime=0;
+            long totalTimeOcultacion=0;
+            String resultado="";
+            long startTime = System.currentTimeMillis();
+            
+            long endTime   = System.currentTimeMillis();
+            totalTime = endTime - startTime;
+            int r =0;
+            String[] almacen = new String[bytes.length];
+            while(bytes.length>r)
+            {
+                ExtendedAscii as = new ExtendedAscii();
+                String s1 = String.format("%8s", Integer.toBinaryString(bytes[r])).replace(' ', '0');
+                if(s1.length()> 8) //con esto quitamos la mantisa a los negativos
+                {
+                    s1 = s1.substring(24, s1.length());
+                }
+                almacen[r]= s1;
+                int charCode=0;
+                if(s1.charAt(0)=='1') //areglado.
+                {
+                    charCode = Integer.parseInt(almacen[r], 2)- 256;
+                }
+                else
+                {
+                    charCode = Integer.parseInt(almacen[r], 2);   
+                }
+                
+
+                r++;
+            }
+            BufferedImage bufferedImage = null;
             try {
-                //pillamos la imagen que e muetra
-                File imgPath = new File(rutica);
-                    
-
-                String clave = jPasswordField1.getText();
-                //asignamos la clave
-                int valorClave = valorDeClave(clave);
-                long totalTime=0;
-                long totalTimeOcultacion=0;
-                String resultado="";
-                int[] valores = new int[resultado.length()];
-                
-                if(jRadioButton1.isSelected()) //significa que se ha elegido AES
+                bufferedImage = ImageIO.read(imgPath);
+            } catch (IOException ex) {
+                Logger.getLogger(PantallaCifrado.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            int height = bufferedImage.getHeight();
+            int width = bufferedImage.getWidth();
+            WritableRaster raster = bufferedImage.getRaster();
+            DataBufferByte data   = (DataBufferByte) raster.getDataBuffer();
+            Random rnd = new Random();
+            rnd.setSeed(data.getData().length+valorClave);
+            int i =0;
+            while(i<almacen.length)
+            {
+                for(int j = 0; j<8; j++)
                 {
-
+                    int posicion = rnd.nextInt(((data.getData().length-1) - 1) + 1)+ 1;
+                    data.getData()[posicion] = lsb(data.getData()[posicion], almacen[i].charAt(j));
                 }
-                else //significa que se ha elegido RC4. Aplica la encriptación al mensaje con la clave proporcionada.
-                {
-                    //Encriptamos
-                    long startTime = System.currentTimeMillis();
-                    RC4 rc4 = new RC4(clave);
-                    
-                    String mensaje = new String(bytes);
-                    char[] result = rc4.encrypt(mensaje.toCharArray());
-                    resultado = new String(result);   
-                    System.out.println(resultado);
-                    valores = new int[resultado.length()];
-//                    System.out.println(asciis.get((byte)resultado.charAt(0) &0xFF)+"este es el 1");
-                    for(int k = 0; k<resultado.length(); k++)
-                    {
-                        valores[k] = ((byte)resultado.charAt(k) & 0xFF);
-                    }
-                    long endTime   = System.currentTimeMillis();
-                    totalTime = endTime - startTime;
-                    
-                }
-                long startTime = System.currentTimeMillis();
-                //Convertimos a binario cada uno de los bytes.
-                int r =0;
-                String[] almacen = new String[bytes.length];
-                while(bytes.length>r)
-                {
-                    
-                    String s1 = String.format("%8s", Integer.toBinaryString(valores[r])).replace(' ', '0');
-                    almacen[r]= s1;
-                    int charCode = Integer.parseInt(almacen[r], 2);
-                    System.out.println(charCode);
-                    r++;
-                }
-                System.out.println(almacen.length+"tamaño almacen");
-                
-                //abrimos la imagen.
-                BufferedImage bufferedImage = null;
-                try {
-                    bufferedImage = ImageIO.read(imgPath);
-                } catch (IOException ex) {
-                    Logger.getLogger(PantallaCifrado.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                int height = bufferedImage.getHeight();
-                int width = bufferedImage.getWidth();
-
-                WritableRaster raster = bufferedImage.getRaster();
-                DataBufferByte data   = (DataBufferByte) raster.getDataBuffer();
-
-                Random rnd = new Random();
-                rnd.setSeed(data.getData().length+valorClave);  //la semilla será el valor de la clave + los datos.
-                
-                int i =0;
-                while(i<almacen.length)
-                {
-                    for(int j = 0; j<8; j++)
-                    {
-                        int posicion = rnd.nextInt(((data.getData().length-1) - 1) + 1)+ 1;
-                        data.getData()[posicion] = lsb(data.getData()[posicion], almacen[i].charAt(j));
-                    }
-                    i++;
-                }
-                //TODO que pille extension mas larga
-                byte[] b = extension.getBytes();
-                int k =0;
-                String[] exten = new String[3];
-                while(b.length>k)
-                {
-                    String s3 = String.format("%8s", Integer.toBinaryString(b[k] & 0xFF)).replace(' ', '0');
-                    exten[k] = s3; 
-                    k++;
-                }
-                
-                
-                //coge los nuevos datos y genera la nueva imagen.
-                //TYPE_3BYTE_BGR
-                BufferedImage newImage = new BufferedImage(width, height, bufferedImage.getType());
-                WritableRaster rasterFinal = newImage.getRaster();
-                rasterFinal.setDataElements(0, 0, width, height, data.getData());
-                newImage.setData(raster);
-                
-                Color mycolor = new Color(Integer.parseInt(exten[0], 2),Integer.parseInt(exten[1], 2), Integer.parseInt(exten[2], 2));
-                String bin = Integer.toBinaryString(almacen.length);
-                String cadenaRojo ="";
-                String cadenaVerde ="";
-                String cadenaAzul ="";
-                int contador=0;
-                
-                
-                ArrayList<Color> tamColores = new ArrayList<Color>();
-                
-                for(int tamCadenaAlmacen=0; tamCadenaAlmacen<=bin.length();tamCadenaAlmacen++)
-                {
-                    int num = tamCadenaAlmacen%24;
-                    if(tamCadenaAlmacen%24 == 0 && tamCadenaAlmacen != 0 || tamCadenaAlmacen==bin.length())
-                    {
-                        if(cadenaVerde.length()!=8)
-                        {
-                            int faltan = 8-cadenaVerde.length();
-                            String auxiliar="";
-                            if(faltan!=8)
-                            {
-                                for(int numerito = 0; numerito<faltan; numerito++)
-                                {
-                                    auxiliar+="0";
-                                }
-                                cadenaVerde = auxiliar.concat(cadenaVerde);
-                            }
-                            else
-                            {
-                                cadenaVerde = "0";
-                            }
-                        }
-                        if(cadenaAzul.length()!=8)
-                        {
-                            int faltan = 8-cadenaAzul.length();
-                            String auxiliar="";
-                            if(faltan!=8)
-                            {
-                                for(int numerito = 0; numerito<faltan; numerito++)
-                                {
-                                    auxiliar+="0";   
-                                }
-                                cadenaAzul = auxiliar.concat(cadenaAzul);  
-                            }
-                            else
-                            {
-                                cadenaAzul="0";
-                            }
-                        }
-                        Color myColorTam= new Color(Integer.parseInt(cadenaRojo, 2),Integer.parseInt(cadenaVerde, 2), Integer.parseInt(cadenaAzul, 2));
-                        tamColores.add(myColorTam);
-                        contador++;
-                        cadenaRojo ="";
-                        cadenaVerde ="";
-                        cadenaAzul ="";
-                        if(tamCadenaAlmacen==bin.length())
-                        {
-                            break;
-                        }
-                    }
-                    if(num<8)
-                    {
-                        cadenaRojo += bin.charAt(tamCadenaAlmacen);
-                    }
-                    if(num>=8 && num<16)
-                    {
-                        cadenaVerde += bin.charAt(tamCadenaAlmacen);
-                    }
-                    if(num>=16 && num<24)
-                    {
-                        cadenaAzul += bin.charAt(tamCadenaAlmacen);
-                    }
-                }
-                try {
-                    //la posicion donde esta el tamaño tambien va escondida
-                    //segun la clave y el tamaño de la imagen.
+                i++;
+            }
+            
+            //////////////////////////////////////////////////
+            //////// EXTENSION DEL FICHERO          //////////
+            //////////////////////////////////////////////////
+            byte[] b = extension.getBytes();
+            int k =0;
+            String[] exten = new String[3];
+            while(b.length>k)
+            {
+                String s3 = String.format("%8s", Integer.toBinaryString(b[k] & 0xFF)).replace(' ', '0');
+                exten[k] = s3;
+                k++;
+            }
+            BufferedImage newImage = new BufferedImage(width, height, bufferedImage.getType());
+            WritableRaster rasterFinal = newImage.getRaster();
+            rasterFinal.setDataElements(0, 0, width, height, data.getData());
+            newImage.setData(raster);
+            Color mycolor = new Color(Integer.parseInt(exten[0], 2),Integer.parseInt(exten[1], 2), Integer.parseInt(exten[2], 2));
+            //////////////////////////////////////////////////
+            ////////////// EL TAMAÑO DEL FICHERO    //////////
+            //////////////////////////////////////////////////
+            String bin = Integer.toBinaryString(almacen.length);
+            Color colorTama;
+            String hexRGB = Long.toHexString(Long.parseLong(bin,2));
+            int need = 6 - hexRGB.length();
+            for(int add = 0; add<need; add++)
+            {
+                hexRGB = '0'+hexRGB;
+            }
+            colorTama = Color.decode('#'+hexRGB);
+            try {
+                //la posicion donde esta el tamaño tambien va escondida
+                //segun la clave y el tamaño de la imagen.
                     Random posiH = new Random();
                     posiH.setSeed(valorClave);
                     int posicionTamTextH = posiH.nextInt((newImage.getHeight() - 1) + 1)+ 1;
                     posicionTamTextH = posicionTamTextH/2;
-                    System.out.println(posicionTamTextH);
+
                     Random posiW = new Random();
                     posiW.setSeed(valorClave);
                     int posicionTamTextW = posiW.nextInt((newImage.getWidth() - 1) + 1)+ 1;
                     posicionTamTextW = posicionTamTextW/2;
-                    System.out.println(posicionTamTextW);
                     newImage.setRGB(posicionTamTextH, posicionTamTextW, mycolor.getRGB()); //asignamos la extension
-                    Color total = new Color(tamColores.size(), 0,0);
-                    newImage.setRGB(posicionTamTextH+1, posicionTamTextW+1, total.getRGB()); //aisgnamos el tamaño del archivo
-                    for(int totalPixeles = 0; totalPixeles<tamColores.size(); totalPixeles++)
-                    {
-                        newImage.setRGB(posicionTamTextH+2+totalPixeles, posicionTamTextW+2+totalPixeles, tamColores.get(totalPixeles).getRGB()); //guardamos los pixeles donde estara escondido el tamaño del fichero.
-                    }
+                    newImage.setRGB(posicionTamTextH+1, posicionTamTextW+1, colorTama.getRGB()); //y el tamaño
                     ImageIO.write(newImage, "png", new File("/Users/joseluisllinaresanton/Desktop/fichero.png"));
 
                     BufferedImage imagenEscalada = EscalarImagen(label_imagen.getWidth(), label_imagen.getHeight(), "/Users/joseluisllinaresanton/Desktop/fichero.png");
@@ -571,15 +462,10 @@ public final class PantallaCifrarFichero extends javax.swing.JFrame {
                     jLabel4.setText(totalTime+ " milisegundos para cifrar el mensaje.");
                     jLabel10.setText(totalTimeOcultacion +" milisegundos para ocultar el mensaje.");
                     jLabel11.setText(pixeles + " modificados en total.");
-                } catch (IOException ex)
-                {
-                    Logger.getLogger(PantallaCifrado.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            } catch (RC4.InvalidKeyException ex) {
-                Logger.getLogger(PantallaCifrarFichero.class.getName()).log(Level.SEVERE, null, ex);
-            } /*catch (UnsupportedEncodingException ex) {
-                Logger.getLogger(PantallaCifrarFichero.class.getName()).log(Level.SEVERE, null, ex);
-            }*/
+            } catch (IOException ex)
+            {
+                Logger.getLogger(PantallaCifrado.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         else
         {
@@ -589,18 +475,8 @@ public final class PantallaCifrarFichero extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton2ActionPerformed
-        if(jRadioButton2.isSelected())
-        {
-            jRadioButton1.setSelected(false);
-        }
-    }//GEN-LAST:event_jRadioButton2ActionPerformed
 
-    private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
-        if(jRadioButton1.isSelected())
-        {
-            jRadioButton2.setSelected(false);
-        }
-    }//GEN-LAST:event_jRadioButton1ActionPerformed
+    }//GEN-LAST:event_jRadioButton2ActionPerformed
 
     public String convertirABinario(String message)
     {
@@ -709,7 +585,6 @@ public final class PantallaCifrarFichero extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel label_imagen;

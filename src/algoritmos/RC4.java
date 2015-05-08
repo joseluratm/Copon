@@ -16,13 +16,6 @@ public class RC4 {
     private static final int SBOX_LENGTH = 256;
     private static final int KEY_MIN_LENGTH = 5;
    
-   
-    public RC4(String key) throws InvalidKeyException {
-        setKey(key);
-    }
- 
-    public RC4() {
-    }
  
     public char[] decrypt(final char[] msg) {
         return encrypt(msg);
@@ -30,6 +23,7 @@ public class RC4 {
  
     public char[] encrypt(final char[] msg) {
         sbox = initSBox(key);
+        ExtendedAscii as = new ExtendedAscii();
         char[] code = new char[msg.length];
         int i = 0;
         int j = 0;
@@ -38,7 +32,8 @@ public class RC4 {
             j = (j + sbox[i]) % SBOX_LENGTH;
             swap(i, j, sbox);
             int rand = sbox[(sbox[i] + sbox[j]) % SBOX_LENGTH];
-            char c = (char) (rand ^ (int) msg[n]);
+            char c = (char)(rand ^ as.getValueAscii(msg[n]));
+            
             code[n] = c;
         }
         return code;
@@ -80,5 +75,5 @@ public class RC4 {
          public InvalidKeyException(String message) {
             super(message);
         }
-    } 
+    }
 }
