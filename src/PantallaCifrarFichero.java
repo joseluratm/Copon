@@ -16,8 +16,11 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 
 import java.util.Random;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -382,8 +385,6 @@ public final class PantallaCifrarFichero extends javax.swing.JFrame {
                 {
                     charCode = Integer.parseInt(almacen[r], 2);   
                 }
-                
-
                 r++;
             }
             BufferedImage bufferedImage = null;
@@ -398,13 +399,20 @@ public final class PantallaCifrarFichero extends javax.swing.JFrame {
             DataBufferByte data   = (DataBufferByte) raster.getDataBuffer();
             Random rnd = new Random();
             rnd.setSeed(data.getData().length+valorClave);
+            Set<Integer> numbers = new LinkedHashSet<Integer>();
             int i =0;
             while(i<almacen.length)
             {
-                for(int j = 0; j<8; j++)
+                int j =0;
+                while(j< 8)
                 {
                     int posicion = rnd.nextInt(((data.getData().length-1) - 1) + 1)+ 1;
-                    data.getData()[posicion] = lsb(data.getData()[posicion], almacen[i].charAt(j));
+                    if(!numbers.contains(posicion))
+                    {
+                        data.getData()[posicion] = lsb(data.getData()[posicion], almacen[i].charAt(j));
+                        numbers.add(posicion);
+                        j++;
+                    }
                 }
                 i++;
             }

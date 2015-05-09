@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
-import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
@@ -19,7 +18,10 @@ import javax.swing.JOptionPane;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import javax.swing.SwingUtilities;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 
 
 /*
@@ -306,8 +308,6 @@ public class PantallaDescifrarFichero extends javax.swing.JFrame {
         
         Random rnd = new Random();
         rnd.setSeed(data.getData().length+valorClave);  //la semilla será el valor de la clave + los datos.
-        
-       
         int i =0;
         String mensajeBinario = "";
         String mensaje="";
@@ -345,15 +345,23 @@ public class PantallaDescifrarFichero extends javax.swing.JFrame {
         int p =0;
         int valor = ((data.getData().length-1) - 1) + 1;
         char[] caract = new char[resultado];
+        Set<Integer> numbers = new LinkedHashSet<Integer>();
         while(p<resultado)
         {
             int posicion = rnd.nextInt(valor)+ 1;
-            String binario = String.format("%8s", Integer.toBinaryString(data.getData()[posicion] & 0xFF)).replace(' ', '0');
-            caract[p] = binario.charAt(binario.length()-1);
-            p=p+1;
+            if(!numbers.contains(posicion))
+            {
+                String binario = String.format("%8s", Integer.toBinaryString(data.getData()[posicion] & 0xFF)).replace(' ', '0');
+                caract[p] = binario.charAt(binario.length()-1);
+                numbers.add(posicion);
+                p=p+1;
+            }
+
         }
         mensajeBinario = new String(caract);
-
+        
+        
+        
         
         
         int as =0;
