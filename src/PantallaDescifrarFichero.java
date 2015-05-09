@@ -360,10 +360,6 @@ public class PantallaDescifrarFichero extends javax.swing.JFrame {
         }
         mensajeBinario = new String(caract);
         
-        
-        
-        
-        
         int as =0;
         int pos =0;
         byte[] caracteres = new byte[mensajeBinario.length()/8];
@@ -375,6 +371,7 @@ public class PantallaDescifrarFichero extends javax.swing.JFrame {
             ExtendedAscii as2 = new ExtendedAscii();
             String aux = mensajeBinario.substring(as, as+8);
             int charCode=0;
+            
             if(aux.charAt(0)=='1')//significa que es negativo
             {
                 charCode = Integer.parseInt(aux, 2)- 256;
@@ -400,7 +397,9 @@ public class PantallaDescifrarFichero extends javax.swing.JFrame {
                 //String resultadoFinal = new String(car.toCharArray());
                 
                 //desencriptado = resultadoFinal;
-        } catch (Exception ex) {
+        }
+        catch (Exception ex)
+        {
             Logger.getLogger(PantallaDesencriptacion.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {

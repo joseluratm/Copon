@@ -16,7 +16,6 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
 import java.util.Random;
@@ -369,7 +368,7 @@ public final class PantallaCifrarFichero extends javax.swing.JFrame {
             String[] almacen = new String[bytes.length];
             while(bytes.length>r)
             {
-                ExtendedAscii as = new ExtendedAscii();
+                
                 String s1 = String.format("%8s", Integer.toBinaryString(bytes[r])).replace(' ', '0');
                 if(s1.length()> 8) //con esto quitamos la mantisa a los negativos
                 {
