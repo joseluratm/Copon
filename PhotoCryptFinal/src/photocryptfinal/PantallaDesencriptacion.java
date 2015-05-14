@@ -98,7 +98,7 @@ public class PantallaDesencriptacion extends javax.swing.JFrame {
 
         jLabel6.setFont(new java.awt.Font("DejaVu Sans", 0, 14)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(204, 204, 204));
-        jLabel6.setText("Imagen codificada");
+        jLabel6.setText("Imagen con información oculta");
 
         jLabel2.setFont(new java.awt.Font("DejaVu Sans", 0, 11)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(204, 204, 204));
